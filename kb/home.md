@@ -1,7 +1,7 @@
 # Home
-Welcome to the Ultra Messaging KB!
+Welcome to the Ultra Messaging Knowledge Base!
 
-This is intended to be an extension to the
+The UM KB is intended to be an extension to the
 [Informatica Knowledge Base](https://knowledge.informatica.com/).
 If you don't find what you're looking for here, try there.
 <br><br>
