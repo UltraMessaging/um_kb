@@ -4,12 +4,16 @@ Welcome to the Ultra Messaging KB!
 This is intended to be an extension to the
 [Informatica Knowledge Base](https://knowledge.informatica.com/).
 If you don't find what you're looking for here, try there.
+<br><br>
+
+## Search UM KB
 
 <form action="https://www.google.com/search" method="get">
   <input type="hidden" name="q" value="site:https://ultramessaging.github.io/um_kb/html">
   <input type="text" name="q" placeholder="Search UM KB">
   <input type="submit" value="Search">
 </form>
+<br>
 
 ## Quick Links
 
