@@ -1,0 +1,115 @@
+<html><head><title>Is UMP Compatible with Hot Failover</title>
+<link href="../doxygen_manual.css" rel="stylesheet" type="text/css" />
+</head>
+<body bgcolor="#ffffff">
+<div id="doc-content">
+<div class="contents">
+<div class="textblock">
+<a href="https://informatica.com"><img src="../infa_logo.png" width="200" height="69" alt="Informatica"/></a>
+<br/>
+<p><b>Ultra Messaging Knowledge Base</b></p>
+<hr>
+<p><a id="is-ump-compatible-with-hot-failover"></a></p>
+<h1>Is UMP Compatible with Hot Failover</h1>
+<p>This article outlines the advantages and disadvantages of using Hot Failover with Persistence and suggests ways to optimize the benefits of using the two together.
+It was originally: &quot;FAQ: Is UMP compatible with Hot Failover?&quot; <a href="https://knowledge.informatica.com/s/article/80173">https://knowledge.informatica.com/s/article/80173</a></p>
+<!-- mdtoc-start -->
+<p>• <a href="#is-ump-compatible-with-hot-failover">Is UMP Compatible with Hot Failover</a><br />
+    • <a href="#benefits">Benefits</a><br />
+    • <a href="#costs-and-considerations">Costs and Considerations</a><br />
+    • <a href="#addressing-hardware-issues">Addressing Hardware Issues</a><br />
+    • <a href="#addressing-application-issues">Addressing Application Issues</a><br />
+    • <a href="#down-to-business">Down To Business</a></p>
+<!-- TOC created by './mdtoc.pl kb/is-ump-compatible-with-hot-failover.md' (see https://github.com/fordsfords/mdtoc) -->
+<!-- mdtoc-end -->
+<p><a id="benefits"></a></p>
+<h2>Benefits</h2>
+<p>Hot Failover provides zero-latency failover for any component in the path from source to receiver: the source-side application, operating system, or NIC, even the network switches and routers along the way. If one of a pair of Hot Failover sources goes down, any receiving applications listening to that source's topic won't even notice the failure. Receiving applications notice no latency spikes or delay while failing over to a waiting warm backup source; there is practically no change at all, from a receiver's perspective. Business simply continues as usual, and the failed source can be repaired and brought back up when it is convenient.</p>
+<p>For more details on how Hot Failover works, please see <a href="https://ultramessaging.github.io/currdoc/doc/Design/umfeatures.html#hotfailoverhf">Hot Failover (HF)</a>.</p>
+<p><a id="costs-and-considerations"></a></p>
+<h2>Costs and Considerations</h2>
+<p>As with any architectural decision, using Hot Failover comes with certain trade-offs. The following issues arise when using Hot Failover independently of UMP.</p>
+<ul>
+<li><p>Additional amount of network bandwidth.</p>
+<p>This is the most obvious effect of using Hot Failover. With Hot Failover, two or more sources constantly send duplicate data over the wire.</p>
+</li>
+<li><p>Increased likelihood of switch port oversubscription.</p>
+<p>In a Hot Failover design, two or more independent sources, connected to two or more different switch ingress ports, send packets destined to one receiver, connected to a single switch egress port. The sources send at the same time. This means the switch funnels packets through multiple switch queues (from the sources) into a single queue (for the receiver). If switch queue depths are not well understood, this can cause a switch to simply throw away the packets that don't fit in the egress queue, leading to potentially massive amounts of loss.</p>
+</li>
+<li><p>Added NIC and CPU load.</p>
+<p>A Hot Failover receiver still receives at least two copies of every message. This means the NIC uses at least twice as many receive descriptors, at least twice as many CPU interrupts occur, and the CPU uses at least twice as much kernel time and a small amount of additional user-space time. All this increases the likelihood of receiver-side loss.</p>
+</li>
+<li><p>Data-dependent bugs unresolved.</p>
+<p>If a Hot Failover source application contains a deterministic data-dependent bug (that is, a bug triggered by certain input to the application) that causes it to crash, running two or even 10 instances of the Hot Failover source application does not provide any better failover capabilities than running a single instance; given the same bug-producing input, all instances are likely to crash at the same time.</p>
+</li>
+</ul>
+<p>Using Hot Failover with UMP poses all of the same issues mentioned above plus the following issues.</p>
+<ul>
+<li><p>Additional storage space required for a UMP disk store.</p>
+<p>Streams from each Hot Failover source must be stored independently.</p>
+</li>
+<li><p>Higher disk activity.</p>
+<p>Hot Failover with UMP requires at least twice as many disk reads during receiver recovery, and at least twice as many disk writes on every message.</p>
+</li>
+<li><p>Higher network activity.</p>
+<p>UME stability ACK messages from the store must be sent to each source application through separate TCP connections. Receivers must send confirmed delivery messages to every source application, again through separate TCP connections to each.</p>
+</li>
+<li><p>Significantly increased application complexity.</p>
+<p>Receiving applications, during recovery, pick up several different streams. They typically should only process messages from one, and must be able to choose which messages to process. At least twice as many source application UMP registration IDs must be managed.</p>
+</li>
+</ul>
+<p>Even with these considerations, UMP and Hot Failover can successfully be used together, and in fact are used together in daily, business-critical production deployments of Ultra Messaging software.</p>
+<p><a id="addressing-hardware-issues"></a></p>
+<h2>Addressing Hardware Issues</h2>
+<p>Here are some recommendations to help mitigate or solve the issues associated with using Hot Failover and UMP together.</p>
+<ul>
+<li><p>Use network hardware that can keep up with the amount of network traffic generated.</p>
+<p>Consider switch buffers and queue sizes carefully. Even expensive switches like the Cisco 6500 series can have small per-port receive and transmit buffers, depending on how they are configured. Calculate how large your switch receive buffers should be to prevent switch queue loss based on your maximum expected data rates and the maximum length of time traffic bursts are likely to last. Typically, not all buffer space is used before drops begin; check your switch's drop policy to find out how much buffer space is usable.</p>
+<p>NIC receive descriptors (on receiving application machines) and socket buffers must be similarly set high enough to handle the maximum expected traffic bursts.</p>
+</li>
+<li><p>Use Ethernet flow control (aka &quot;pause frames&quot;) on most switches to essentially extend a receiver's receive buffer slightly. Use the switch's egress port buffer as extra buffer space. This is a poor substitute for sufficient NIC receive descriptors, however.</p>
+</li>
+<li><p>Consider using bonded NICs on receivers with 802.3ad link aggregation for increased capacity rather than for failover. This can also alleviate some switch port oversubscription issues.</p>
+</li>
+<li><p>Use multiple disks for UME disk stores and spread each Hot Failover source in a pair across different disks. This is a good practice, in general, for both efficiency and fault tolerance reasons.</p>
+</li>
+</ul>
+<p><a id="addressing-application-issues"></a></p>
+<h2>Addressing Application Issues</h2>
+<p>Using UMP and Hot Failover together requires some additional application complexity not needed when using UMP or Hot Failover alone.</p>
+<ul>
+<li><p>Enable UMP explicit ACKs and Hot Failover duplicate delivery in each Hot Failover receiving application. This is the most significant required change.</p>
+<p>Normally, the Store tracks the last sequence number that the receiver acknowledges. With implicit ACKs, the ACK is generally sent when the message is deleted. However, with hot failover, the second copy of the message to arrive triggers an immediate deletion. Thus, it is possible that the application is still processing message X when the second copy of X arrives and is acknowledged. This raises the possibility that the application crashes before it is finished processing message X, and upon restart, the message is <em>not</em> re-delivered. This violates the guarantee of delivery.</p>
+<p>To avoid this possibility, configure the receiver for explicit ACKs (<a href="https://ultramessaging.github.io/currdoc/doc/Config/grpultramessagingpersistence.html#umeexplicitackonlyreceiver">ume_explicit_ack_only (receiver) 1</a>) and duplicate delivery (<a href="https://ultramessaging.github.io/currdoc/doc/Config/grphotfailoveroperation.html#hfduplicatedeliveryreceiver">hf_duplicate_delivery (receiver) 1</a> or <a href="https://ultramessaging.github.io/currdoc/doc/Config/grphotfailoveroperation.html#duplicatedeliveryhfx">duplicate_delivery (hfx) 1</a>).</p>
+<p>When you enable duplicate delivery, UMP sets a special flag on duplicate incoming messages (meaning their Hot Failover sequence number has already been received by the receiving application). An application can check this flag; if it is clear (indicating that this is the first receipt of the message), the application begins processing the message. If the flag is set, the application might simply place the message on a queue of &quot;messages to be acknowledged,&quot; and release and acknowledge the message along with the original message as soon as it processes the original message.</p>
+</li>
+<li><p>Implement a good registration ID management system to prevent overlap or confusion.</p>
+<p>Using Hot Failover requires at least twice as many sources to be registered with the UMP store as would otherwise be required. Sources (even Hot Failover sources) cannot share UMP registration IDs, so you need to register each source individually.</p>
+</li>
+</ul>
+<p>For more information about lbm_msg_retain(), please refer to the C API documentation. Information about LBMMessage can be found in the .NET and Java API documentation. Information about hf_duplicate_delivery is in the &quot;Hot Failover Operation Options&quot; section of the LBM Configuration Guide, and ume_explicit_ack_only information is in the &quot;Ultra Messaging Persistence Options&quot; section of the same document.</p>
+<p><a id="down-to-business"></a></p>
+<h2>Down To Business</h2>
+<p>Whether or not to use Hot Failover with UMP is essentially a business decision. Hot Failover provides one massive benefit - zero-latency source failover - at the significant costs of increased hardware expenditures, the necessity of a much more tightly controlled infrastructure, and increased software complexity.</p>
+<p>To use an exchange as an example, the main questions to ask when making a decision for or against using Hot Failover might be:</p>
+<ul>
+<li><p>Do I need to ensure that customers do not notice source failure at all, at the cost of slightly higher average per-message latencies?</p>
+</li>
+<li><p>Do I want lower average latencies accompanied by perceivable latency spikes in the event of a hot-warm source failover?</p>
+</li>
+</ul>
+<p>Or, to put it more bluntly,</p>
+<ul>
+<li><p>Will I lose more money and customers if my average execution latencies are slightly higher than my competition's?</p>
+</li>
+<li><p>Or will I lose more money if customers experience a rare enormous latency spike but have lower average latencies on the majority of trading days?</p>
+</li>
+</ul>
+<p><strong>Do not use Hot Failover</strong> if you want lower average latencies with the occasional rare latency spike on a hot-warm source failover.</p>
+<p><strong>Use Hot Failover</strong> if you want slightly higher average latencies with no latency spikes on source failover.</p>
+<hr>
+<p>KB <a href="home.html">Home</a> | <a href="index.html">Index</a></p>
+<p>UM <a href="https://ultramessaging.github.io/">Home</a></p>
+<p>See <a href="https://ultramessaging.github.io/#notices">Notices</a> for important information.
+</div></div></div>
+</body></html>

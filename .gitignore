@@ -1,0 +1,8 @@
+# Scratch files
+x
+x.*
+*.x
+*.tmp
+*.tmp[0-9]
+~*
+.DS_Store

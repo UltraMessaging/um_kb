@@ -1,0 +1,83 @@
+<html><head><title>Static Linking</title>
+<link href="../doxygen_manual.css" rel="stylesheet" type="text/css" />
+</head>
+<body bgcolor="#ffffff">
+<div id="doc-content">
+<div class="contents">
+<div class="textblock">
+<a href="https://informatica.com"><img src="../infa_logo.png" width="200" height="69" alt="Informatica"/></a>
+<br/>
+<p><b>Ultra Messaging Knowledge Base</b></p>
+<hr>
+<p><a id="static-linking"></a></p>
+<h1>Static Linking</h1>
+<!-- mdtoc-start -->
+<p>• <a href="#static-linking">Static Linking</a><br />
+    • <a href="#the-problem">The Problem</a><br />
+    • <a href="#root-cause">Root Cause</a><br />
+    • <a href="#solution">Solution</a></p>
+<!-- TOC created by './mdtoc.pl kb/static-linking.md' (see https://github.com/fordsfords/mdtoc) -->
+<!-- mdtoc-end -->
+<p><a id="the-problem"></a></p>
+<h2>The Problem</h2>
+<p>We had a customer who built their Linux application with UM
+successfully and the program seemed to work fine.
+After some discussion, they decided to enable the
+<a href="https://ultramessaging.github.io/currdoc/doc/Design/advancedoptimizations.html#receivemultipledatagrams">Receive Multiple Datagrams</a>
+feature to improve their latency and throughput.
+However, they got the warning:</p>
+<pre><code>Core-10383-2: WARNING: multiple_receive_maximum_datagrams or transport_lbtrm_source_timestamp specified but recvmmsg is NOT supported
+</code></pre>
+<p>and althought the program still functioned correctly,
+the feature was not enabled.</p>
+<p><a id="root-cause"></a></p>
+<h2>Root Cause</h2>
+<p>The program was linked with &quot;-static&quot;,
+which forces the whole executable static,
+including the system libraries like glibc.</p>
+<p>However, UM's Receive Multiple Datagrams feature uses the
+<a href="https://linux.die.net/man/2/recvmmsg">recvmmsg()</a> system call,
+which was introduced to Linux in 2010.
+We wanted UM to work with older versions of Linux while
+still taking advantages of new features,
+so we use <a href="https://linux.die.net/man/3/dlopen">dlopen()</a>
+to look up the &quot;recvmmsg&quot; symbol.
+But that doesn't work right for statically linked
+executables; hence the &quot;recvmmsg is NOT supported&quot; warning.</p>
+<p>Static linking can slightly improve performance,
+so many customers want to statically link as much of
+their program as feasible, including the UM library.
+However, there are several potential problems with statically linking glibc,
+so except for
+<a href="https://developers.redhat.com/articles/2023/08/31/how-we-ensure-statically-linked-applications-stay-way">special circumstances</a>,
+Informatica generally recommends not statically linking glibc.
+In particular, some UM features are unavailable if glibc is statically linked
+due to those features' use of dlopen().</p>
+<p><a id="solution"></a></p>
+<h2>Solution</h2>
+<p>Our recommended solution to the customer was to remove &quot;-static&quot; from
+their application link and include individual &quot;.a&quot; libraries for
+those libraries that are safe to statically include.</p>
+<p>With more-recent versions of Linux,
+you may also need to include &quot;-no-pie&quot; to prevent the linker from
+trying to build a position-independent executable (UM is not built with PIC).</p>
+<p>Here is an example build command that includes UM's static library:</p>
+<pre><code>g++ -no-pie -Wall -Wextra -g -std=c++2a -fPIC \
+  -I $LBM/include -I $LBM/include/lbm -pthread \
+  -Wl,--whole-archive $LBM/lib/liblbm.a -Wl,--no-whole-archive \
+  /usr/lib/x86_64-linux-gnu/librt.a /usr/lib/gcc/x86_64-linux-gnu/9/libstdc++.a \
+  -l dl -l m \
+  -o main main.cpp
+</code></pre>
+<p>Note the &quot;-Wl,--whole-archive&quot; and &quot;-Wl,--no-whole-archive&quot;
+wrapping the UM library.
+This is needed to ensure proper initialization when
+statically linking with UM.</p>
+<p>Note also that while librt and libstdc++ are safe to statically link,
+libdl and libm are typically not.</p>
+<hr>
+<p>KB <a href="home.html">Home</a> | <a href="index.html">Index</a></p>
+<p>UM <a href="https://ultramessaging.github.io/">Home</a></p>
+<p>See <a href="https://ultramessaging.github.io/#notices">Notices</a> for important information.
+</div></div></div>
+</body></html>

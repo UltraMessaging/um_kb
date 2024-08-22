@@ -1,0 +1,101 @@
+<html><head><title>UM in Containers Notes</title>
+<link href="../doxygen_manual.css" rel="stylesheet" type="text/css" />
+</head>
+<body bgcolor="#ffffff">
+<div id="doc-content">
+<div class="contents">
+<div class="textblock">
+<a href="https://informatica.com"><img src="../infa_logo.png" width="200" height="69" alt="Informatica"/></a>
+<br/>
+<p><b>Ultra Messaging Knowledge Base</b></p>
+<hr>
+<p><a id="um-in-containers-notes"></a></p>
+<h1>UM in Containers Notes</h1>
+<!-- mdtoc-start -->
+<p>• <a href="#um-in-containers-notes">UM in Containers Notes</a><br />
+    • <a href="#disclaimer">Disclaimer</a><br />
+    • <a href="#bottom-line">Bottom Line</a><br />
+    • <a href="#cloud">Cloud</a><br />
+    • <a href="#network">Network</a><br />
+    • <a href="#tools">Tools</a><br />
+    • <a href="#next-steps">Next Steps</a></p>
+<!-- TOC created by './mdtoc.pl kb/um-in-containers-notes.md' (see https://github.com/fordsfords/mdtoc) -->
+<!-- mdtoc-end -->
+<p><a id="disclaimer"></a></p>
+<h2>Disclaimer</h2>
+<p>The Informatica Ultra Messaging group does not have high expertise in the container environment.
+To the degree that containers provide a Windows or Linux execution environment, Ultra Messaging code will run fine in them.
+But we cannot help you properly configure your container instances.</p>
+<p><a id="bottom-line"></a></p>
+<h2>Bottom Line</h2>
+<p>UM is fully supported in containers.
+We have customers using a variety of different UM versions in Docker containers.
+In most cases, they are able to migrate to containers without any changes to their source code.</p>
+<p>Porting to any kind of different environment brings with it the possibility of some kind of incompatibility,
+so naturally you will need to test your system before going live.
+But based on our experience, there should be no incompatibilities with UM.</p>
+<p>Here are the high-level topics that need to be considered when migrating to the Cloud.</p>
+<p><a id="cloud"></a></p>
+<h2>Cloud</h2>
+<p>Some customers decide to containerize their applications at the same time they
+move to the cloud.
+We recommend that this be done as two separate steps.
+First containerize your applications in your own data center,
+and once that is working to your satisfaction, migrate to the cloud.</p>
+<p>See <a href="UM-in-the-Cloud-Notes.md">UM in the Cloud Notes</a>.</p>
+<p><a id="network"></a></p>
+<h2>Network</h2>
+<p>In general, UM expects its services to be run in environments with stable IP
+addresses that are directly accessible from all processes in the same
+<a href="https://ultramessaging.github.io/currdoc/doc/Design/fundamentalconcepts.html#topicresolutiondomain">topic resolution domain</a>
+(TRD).
+For example, if you run an &quot;lbmrd&quot; process,
+your applications will expect it to be available on a configured IP address.
+If that IP address changes, you must reconfigure your applications.</p>
+<p>By default, containers sheild the applications from the real network,
+providing instead a virtual network.
+We recommend configuring your container to NOT use the virtual network.
+Instead, give the container direct access to the physical network interface.
+In a non-cloud environment, this gives you low latency, a stable IP address,
+and access to multicast.</p>
+<p>In some cases, customers desire to use the virtual network provided by
+their container orchestrator (e.g. Kubernettes).
+We have evidence that multicast can still work (in a non-cloud environment),
+but will have higher latency.</p>
+<p><a id="tools"></a></p>
+<h2>Tools</h2>
+<p>In our experience, most containers are constructed to be &quot;bare bones&quot;,
+without many diagnostic tools.</p>
+<p>We recommend adding the following tools to your containers to assist
+in troubleshooting problems:</p>
+<ul>
+<li>&quot;ifconfig&quot; (or its more modern form, &quot;ip&quot;).</li>
+<li>&quot;netstat&quot; (or its more modern form, &quot;ss&quot;).</li>
+<li>&quot;ping&quot;</li>
+<li>&quot;msend&quot; and &quot;mdump&quot; (part of the <a href="https://github.com/UltraMessaging/mtools">mtools</a> set).</li>
+<li>&quot;lbmtrreq&quot;, &quot;lbmsrc&quot;, &quot;lbmrcv&quot; (part of the UM &quot;bin&quot; directory tools).</li>
+</ul>
+<p><a id="next-steps"></a></p>
+<h2>Next Steps</h2>
+<p>To effectively support you,
+UM Support would like to have a meeting where you describe the architecture of the system,
+as it exists today and as you envision it existing containerized.
+Your primary publishers and subscribers would be good to know.
+Approximate data rates would also be good to know.</p>
+<p>We would also want to see your configuration.
+There are typically two kinds of configuration that we’ll need:</p>
+<ol>
+<li>Application configuration for UM. This is typically supplied using configuration files.</li>
+<li>UM Service configuration. Do you use our Persistence functionality?
+If so, then you have “Store” processes running. We’ll want to see those configurations too.</li>
+<li>Are you running the “lbmrd” service today?
+If so, when we’ll want that configuration file too
+(although sometimes the process can be run without a configuration file,
+with all operating parameter supplied on the command line).</li>
+</ol>
+<hr>
+<p>KB <a href="home.html">Home</a> | <a href="index.html">Index</a></p>
+<p>UM <a href="https://ultramessaging.github.io/">Home</a></p>
+<p>See <a href="https://ultramessaging.github.io/#notices">Notices</a> for important information.
+</div></div></div>
+</body></html>
