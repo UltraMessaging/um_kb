@@ -1,7 +1,19 @@
 # Home
 Welcome to the Ultra Messaging KB!
 
-This is intended to be a place where miscellaneous useful information about Ultra Messaging can be provided to users.
+This is intended to be an extension to the
+[Informatica Knowledge Base](https://knowledge.informatica.com/).
+If you don't find what you're looking for here, try there.
+
+<form action="https://www.google.com/search" method="get">
+  <input type="hidden" name="q" value="site:https://ultramessaging.github.io/um_kb/html">
+  <input type="text" name="q" placeholder="Search UM KB">
+  <input type="submit" value="Search">
+</form>
+
+## Quick Links
+
+Here are a few recently added articles.
 
 * [Full UM documentation](https://ultramessaging.github.io/currdoc/) - official documentation.
 
