@@ -21,8 +21,10 @@ Here are a few recently added articles.
 
 * [Full UM documentation](https://ultramessaging.github.io/currdoc/) - official documentation.
 
+* [[LBT-RU Configuration]] - Advice on configuring LBT-RU and DRO UDP peer links.
+
 * [[UM in the Cloud Notes]] - What to think about when migrating UM to the Cloud.
 
-* [[Lbmrd NAT Notes]] - explanation and demonstration of UM's "NAT" capabilities of the "lbmrd" resolver daemon.
+* [[Lbmrd NAT Notes]] - Explanation and demonstration of UM's "NAT" capabilities of the "lbmrd" resolver daemon.
 
 * [[Socket Buffer Notes]]

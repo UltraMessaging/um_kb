@@ -1,0 +1,219 @@
+<html><head><title>Lost Packet Recovery</title>
+<link href="../doxygen_manual.css" rel="stylesheet" type="text/css" />
+</head>
+<body bgcolor="#ffffff">
+<div id="doc-content">
+<div class="contents">
+<div class="textblock">
+<a href="https://informatica.com"><img src="../infa_logo.png" width="200" height="69" alt="Informatica"/></a>
+<br/>
+<p><b>Ultra Messaging Knowledge Base</b></p>
+<hr>
+<p><a id="lost-packet-recovery"></a></p>
+<h1>Lost Packet Recovery</h1>
+<p>Overview of Ultra Messaging's lost packet recovery protocol.</p>
+<!-- mdtoc-start -->
+<p>• <a href="#lost-packet-recovery">Lost Packet Recovery</a><br />
+    • <a href="#introduction">Introduction</a><br />
+    • <a href="#packet-loss-prevention">Packet Loss Prevention</a><br />
+    • <a href="#recovery-protocols">Recovery Protocols</a><br />
+        • <a href="#udp-based-transport-recovery">UDP-Based Transport Recovery</a><br />
+        • <a href="#delivery-controller-recovery">Delivery Controller Recovery</a></p>
+<!-- TOC created by './mdtoc.pl kb/lost-packet-recovery.md' (see https://github.com/fordsfords/mdtoc) -->
+<!-- mdtoc-end -->
+<p><a id="introduction"></a></p>
+<h2>Introduction</h2>
+<p>This article gives an overview of Ultra Messaging's lost packet recovery protocol.
+It assumes you are familiar with the basics of Ultra Messaging's messaging paradigm
+and the basics of network data communication. If any of the following are unfamiliar,
+contact UM support.</p>
+<ul>
+<li>A UM publisher sends messages to a
+<a href="https://ultramessaging.github.io/currdoc/doc/Design/fundamentalconcepts.html#topicstructureandmanagement">topic</a>.
+The publisher uses a configurable
+<a href="https://ultramessaging.github.io/currdoc/doc/Design/transporttypes.html">transport type</a>
+to send the messages.</li>
+<li>The publisher must map topics onto
+&quot;<a href="https://ultramessaging.github.io/currdoc/doc/Design/fundamentalconcepts.html#transportsessions">transport sessions</a>&quot;.</li>
+<li>A UM subscriber receives messages on a topic basis.</li>
+<li>A packet is the smallest unit of data to flow through a network.</li>
+<li>A switch is a network device that hosts connect to and transports packets between hosts.</li>
+<li>A NIC (Network Interface Card) is a device in the host that communicates with a switch.</li>
+<li>A network driver is a software stack, usually part of the operating system, that provides
+an IP-based protocol layer on the network hardware. Note that the network driver can also
+be in user space, for example,
+&quot;<a href="https://github.com/Xilinx-CNS/onload">Onload</a>&quot;.</li>
+<li>TCP and UDP are higher-level protocols implemented by the network driver.</li>
+<li>A datagram is a UDP-based message, frequently contained in a single packet,
+but sometimes is
+<a href="https://ultramessaging.github.io/currdoc/doc/Design/umglossary.html#glossaryipfragmentation">fragmented</a>
+by IP into multiple packets that are reassembled on the
+receiving host.
+UM normally deals in datagrams, not packets.</li>
+<li><a href="https://en.wikipedia.org/wiki/Multicast">Multicast</a>
+is a packet addressing scheme for networks where a single packet sent into the
+network is replicated by the network and delivered to multiple hosts that are joined
+to the multicast address (more properly, &quot;multicast group&quot;).</li>
+</ul>
+<p>Related articles:</p>
+<ul>
+<li><a href="packet-loss.html">Packet Loss</a></li>
+<li><a href="nak-storms.html">NAK Storms</a></li>
+</ul>
+<p><a id="packet-loss-prevention"></a></p>
+<h2>Packet Loss Prevention</h2>
+<p>Everybody should have as their goal to reduce or eliminate packet loss
+as much as possible.
+See <a href="packet-loss.html">Packet Loss</a>.</p>
+<p>But it is usually not possible to completely eliminate all possibility
+of packet loss.
+In most networks, the most common failure is packet loss.
+I.e., a publishing application sends a message,
+and the packets never make it to the subscribing application.</p>
+<p>Packet loss usually occurs in one of two ways:</p>
+<ul>
+<li>Sporadic packet loss, when some, but not all, sent packets fail to reach their destination,
+usually due to network or host overload.
+See <a href="https://ultramessaging.github.io/currdoc/doc/Design/packetloss.html#packetlosspoints">Packet Loss Points</a>.</li>
+<li>Connectivity failure, resulting in loss of all sent packets,
+often caused by malfunctioning hardware such as NIC, switch, router, or WAN link failures.</li>
+</ul>
+<p>Packet loss generally happens in &quot;incidents&quot; that are limited in duration.
+Sporatdc packet loss might last a few tens of milliseconds to many seconds.
+Connectivity failures are typically longer, lasting anywhere from a several seconds to
+many hours.</p>
+<p>Note that the TCP protocol implements its own lost packet recovery protocol
+independent of UM, and usually recovers sporadic loss.
+But connectivity failures that last too long will result in TCP disconnects,
+with the result that when the connectivity failure is repaired, the messages sent
+during the incident will not be automatically recovered by the TCP protocol.</p>
+<p>In contrast, UDP-based protocols (like UM's LBT-RU and LBT-RM)
+implement their own reliability protocol that performs the same function as
+TCP in recovering lost packets.
+Note that UM's UDP-based reliability protocols can provide lower latency and
+higher average throughput than TCP in networks where low levels of sporadic loss are endemic.</p>
+<p><a id="recovery-protocols"></a></p>
+<h2>Recovery Protocols</h2>
+<p>UM's lost packet recovery protocols are divided into two layers:
+transport protocol and delivery controller.</p>
+<p>The transport protocol's recovery is targeted primarily at sporadic packet loss.
+The details of the recovery protocols vary depending on the source protocol selected.
+For example, the LBT-TCP protocol simply leverages TCP's recovery,
+while LBT-RM and LBT-RU use a NAK-based recovery protocol.</p>
+<p>The delivery controller recovery layer generally functions when the transport layer
+fails to recover.  For example:</p>
+<ul>
+<li>The LBT-TCP protocol might suffer a disconnection due to a long-lasting connectivity failure.</li>
+<li>The LBT-RM protocol's configured recovery time limit is exceeded.</li>
+<li>The subscribing application crashes and restarts.</li>
+</ul>
+<p><a id="udp-based-transport-recovery"></a></p>
+<h3>UDP-Based Transport Recovery</h3>
+<p>The LBT-RU and LBT-RM transports have almost identical lost packet recovery protocols.
+This section applies to both.</p>
+<p>Application messages are inserted into a UM datagram that contains
+a transport sequence number specific to the transport session
+that the message's topic is mapped to.
+This is not the sequence number that is visible to the application;
+it is only visible in packet captures.</p>
+<p>A subscriber detects loss as a gap in sequence numbers.
+I.e., it has to have successfully received messages before
+the loss incident and after to see the gap.</p>
+<ul>
+<li>Head loss is defined as packet loss that happens before the first
+successfully received datagram. It can sometimes be avoided by
+delaying a publisher from sending after it has created its source.</li>
+<li>Tail loss is defined as packet loss that happens after the last
+successfully received datagram.
+It can sometimes be avoided by delaying the deletion of a publisher
+after it has finished sending but before it deletes its source.</li>
+</ul>
+<p>UM's transport recovery does not detect or attempt to recover from
+head loss or tail loss,
+although the Delivery Controller recovery can.</p>
+<p>When a subscriber detects a sequence number gap, here is the sequence
+of operations performed by the transport recovery protocol:</p>
+<ol>
+<li>As the publisher sends datagrams, they are saved in the transport session's transmission window.
+See note [a].</li>
+<li>The UM receiver identifies the missing sequence numbers in an internal &quot;loss map&quot; structure.</li>
+<li>The UM receiver sets a &quot;NAK timer&quot; for the initial NAK backoff. This timer is set to a randomized value.
+See note [b].</li>
+<li>If the missing datagrams arrive before the NAK timer expires, the timer is canceled and the
+entries are removed from the loss map. See note [c].</li>
+<li>If the NAK timer expires, the subscriber will create a &quot;NAK packet&quot; (actually datagram)
+which contains one or more sequence numbers that make up the gap. See note [d].
+It sends this NAK datagram to the source, and sets a new NAK timer.</li>
+<li>The source checks each sequence number and its internal state to see if it can send
+a retransmission of the missing data. If so, the requested datagrams are re-sent.
+If not, the source may send an &quot;NCF&quot; (NAK Confirmation).
+See note [e].</li>
+<li>If the subscriber receives datagrams with sequence numbers in its loss map,
+it removes the entries from the loss map and cancels the NAK timer for those
+sequence numbers.</li>
+<li>If the NAK timer expires again, resume step 4.</li>
+<li>There is also a configurable NAK generation interval that sets the maximum time
+the transport will attempt to recover datagrams.
+If entries in the loss map are older than this interval, they are declared unrecoverable
+and removed from the loss map.</li>
+</ol>
+<p>In both LBT-RM and LBT-RU, message retransmissions and NCFs are sent to <em>all</em> subscribers,
+not just the one(s) that sent NAKs.
+(In contrast, the delivery controller recovery protocols only send recovery to the
+subscriber(s) that request it.)</p>
+<p>Additional description of this protocol is available at
+<a href="https://ultramessaging.github.io/currdoc/doc/Config/grptransportlbtrmreliability.html">Transport LBT-RM Reliability Options</a></p>
+<p>NOTES:</p>
+<p><strong>[a]</strong>: In step 1, the publisher saves transmitted messages in the transport session's
+transmission window.
+This is a fixed-size data structure that saves previously sent messages up to a size limit.
+When the size limit is reached, the oldest messages are removed to make room for the newer
+messages.
+Each message that is sent contains in its header the current lowest and highest sequence
+numbers in the transmission window.</p>
+<p><strong>[b]</strong>: The initial NAK backoff was not originally part of LBT-RU.
+It was added in UM version 6.10.
+We encourage all users of pre-6.10 versions to upgrade.</p>
+<p><strong>[c]</strong>: In step 3, the missing datagrams might arrive before the initial NAK timer expires
+because some other subscriber had the same loss and set a shorter randomized timer and already
+sent the NAK and got retransmission. Or it might be because networks and operating systems can
+sometimes deliver UDP packets out of order. When UM receives the packets out of order,
+it interprets the sequence number discontinuities as loss which is immediately repaired.</p>
+<p><strong>[d]</strong>: In step 4, the receiver assembles a NAK datagram. However, the most recent successfully
+received datagram for that transport session contains the current lowest and highest sequence
+numbers in the transmission window. If the receiver detects that one or more of its missing
+sequence numbers are NOT in the source's transmission window range,
+the receiver will declare the sequence numbers unrecoverable loss and will not include them
+in the NAK datagram.
+This does not necessarily trigger an unrecoverable loss event being delivered to the
+subscribing application since the delivery controller may succeed in recovering the missing
+messages.</p>
+<p><strong>[e]</strong>: In step 5, the source might determine that it cannot retransmit a requested datagram.
+This might be because the datagram is no longer in its transmission window, in which case the request
+is ignored and no NCF is sent. Or it might have reached its retransmit rate limit, in which case
+it sends an NCF. Or it might have already sent a retransmission within its suppression interval,
+in which case it sends an NCF.
+Also, note that LBT-RM's NCF algorithm changed in UM version 6.10 to reduce the number of
+NCFs sent during periods of heavy loss.
+We encourage all users of pre-6.10 versions to upgrade.</p>
+<p><a id="delivery-controller-recovery"></a></p>
+<h3>Delivery Controller Recovery</h3>
+<p>There are two forms of delivery controller recovery:</p>
+<ul>
+<li><a href="https://ultramessaging.github.io/currdoc/doc/Design/fundamentalconcepts.html#latejoin">Late join</a>:
+when a newly-created receiver determines that it needs to recover messages sent before the receiver was created.</li>
+<li><a href="https://ultramessaging.github.io/currdoc/doc/Design/umfeatures.html#offtransportrecoveryotr">Off-Transport Recovery (OTR)</a>:
+when the transport is not able to recover packets, the OTR protocol can optionally attempt to.</li>
+</ul>
+<p>Note that both late join and OTR use the same underlying protocol, which is TCP-based.
+This protocol functions between a source and a receiver in a
+&quot;<a href="https://ultramessaging.github.io/currdoc/doc/Design/fundamentalconcepts.html#streaming">streaming</a>&quot;
+(non-persisted) use case,
+or between a Store and a receiver in a
+<a href="https://ultramessaging.github.io/currdoc/doc/Design/fundamentalconcepts.html#persistence">persisted</a> use case.</p>
+<hr>
+<p>KB <a href="home.html">Home</a> | <a href="index.html">Index</a></p>
+<p>UM <a href="https://ultramessaging.github.io/">Home</a></p>
+<p>See <a href="https://ultramessaging.github.io/#notices">Notices</a> for important information.
+</div></div></div>
+</body></html>
