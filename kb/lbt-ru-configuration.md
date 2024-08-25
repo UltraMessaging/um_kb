@@ -4,7 +4,6 @@
 &bull; [LBT-RU Configuration](#lbt-ru-configuration)  
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [Introduction](#introduction)  
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [High-Level Considerations](#high-level-considerations)  
-&nbsp;&nbsp;&nbsp;&nbsp;&bull; [NAK Storms](#nak-storms)  
 <!-- TOC created by './mdtoc.pl kb/lbt-ru-configuration.md' (see https://github.com/fordsfords/mdtoc) -->
 <!-- mdtoc-end -->
 

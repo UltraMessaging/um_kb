@@ -18,7 +18,8 @@
     • <a href="#packet-loss-prevention">Packet Loss Prevention</a><br />
     • <a href="#recovery-protocols">Recovery Protocols</a><br />
         • <a href="#udp-based-transport-recovery">UDP-Based Transport Recovery</a><br />
-        • <a href="#delivery-controller-recovery">Delivery Controller Recovery</a></p>
+        • <a href="#delivery-controller-recovery">Delivery Controller Recovery</a><br />
+    • <a href="#proper-configuration">Proper Configuration</a></p>
 <!-- TOC created by './mdtoc.pl kb/lost-packet-recovery.md' (see https://github.com/fordsfords/mdtoc) -->
 <!-- mdtoc-end -->
 <p><a id="introduction"></a></p>
@@ -26,7 +27,7 @@
 <p>This article gives an overview of Ultra Messaging's lost packet recovery protocol.
 It assumes you are familiar with the basics of Ultra Messaging's messaging paradigm
 and the basics of network data communication. If any of the following are unfamiliar,
-contact UM support.</p>
+<a href="https://ultramessaging.github.io/UM_Support.html">contact Support</a> for assistance.</p>
 <ul>
 <li>A UM publisher sends messages to a
 <a href="https://ultramessaging.github.io/currdoc/doc/Design/fundamentalconcepts.html#topicstructureandmanagement">topic</a>.
@@ -57,6 +58,7 @@ to the multicast address (more properly, &quot;multicast group&quot;).</li>
 </ul>
 <p>Related articles:</p>
 <ul>
+<li><a href="configuring-udp-based-transports.html">Configuring UDP-Based Transports</a></li>
 <li><a href="packet-loss.html">Packet Loss</a></li>
 <li><a href="nak-storms.html">NAK Storms</a></li>
 </ul>
@@ -211,6 +213,11 @@ This protocol functions between a source and a receiver in a
 (non-persisted) use case,
 or between a Store and a receiver in a
 <a href="https://ultramessaging.github.io/currdoc/doc/Design/fundamentalconcepts.html#persistence">persisted</a> use case.</p>
+<p><a id="proper-configuration"></a></p>
+<h2>Proper Configuration</h2>
+<p>Proper configuration of sources and receivers will reduce the chances of
+loss and <a href="nak-storms.html">NAK storms</a>.
+See <a href="configuring-udp-based-transports.html">Configuring UDP-Based Transports</a>.</p>
 <hr>
 <p>KB <a href="home.html">Home</a> | <a href="index.html">Index</a></p>
 <p>UM <a href="https://ultramessaging.github.io/">Home</a></p>

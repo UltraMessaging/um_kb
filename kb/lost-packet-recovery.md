@@ -9,6 +9,7 @@ Overview of Ultra Messaging's lost packet recovery protocol.
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [Recovery Protocols](#recovery-protocols)  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&bull; [UDP-Based Transport Recovery](#udp-based-transport-recovery)  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&bull; [Delivery Controller Recovery](#delivery-controller-recovery)  
+&nbsp;&nbsp;&nbsp;&nbsp;&bull; [Proper Configuration](#proper-configuration)  
 <!-- TOC created by './mdtoc.pl kb/lost-packet-recovery.md' (see https://github.com/fordsfords/mdtoc) -->
 <!-- mdtoc-end -->
 
@@ -18,7 +19,7 @@ Overview of Ultra Messaging's lost packet recovery protocol.
 This article gives an overview of Ultra Messaging's lost packet recovery protocol.
 It assumes you are familiar with the basics of Ultra Messaging's messaging paradigm
 and the basics of network data communication. If any of the following are unfamiliar,
-contact UM support.
+[contact Support](https://ultramessaging.github.io/UM_Support.html) for assistance.
 * A UM publisher sends messages to a
 [topic](https://ultramessaging.github.io/currdoc/doc/Design/fundamentalconcepts.html#topicstructureandmanagement).
 The publisher uses a configurable
@@ -47,6 +48,7 @@ network is replicated by the network and delivered to multiple hosts that are jo
 to the multicast address (more properly, "multicast group").
 
 Related articles:
+* [[Configuring UDP-Based Transports]]
 * [[Packet Loss]]
 * [[NAK Storms]]
 
@@ -214,3 +216,9 @@ This protocol functions between a source and a receiver in a
 (non-persisted) use case,
 or between a Store and a receiver in a
 [persisted](https://ultramessaging.github.io/currdoc/doc/Design/fundamentalconcepts.html#persistence) use case.
+
+## Proper Configuration
+
+Proper configuration of sources and receivers will reduce the chances of
+loss and [[NAK storms]].
+See [[Configuring UDP-Based Transports]].

@@ -17,10 +17,11 @@
     • <a href="#introduction">Introduction</a><br />
     • <a href="#causes-of-packet-loss">Causes of Packet Loss</a><br />
     • <a href="#avoiding-packet-loss">Avoiding Packet Loss</a><br />
-    • <a href="#decrease-packet-flow-through-loss-points">Decrease Packet Flow through Loss Points</a><br />
-    • <a href="#increase-efficiency-of-packet-consumers">Increase Efficiency of Packet Consumers</a><br />
-    • <a href="#decrease-packet-rate-using-rate-limiter">Decrease Packet Rate Using Rate Limiter</a><br />
-        • <a href="#many-subscribers-to-few-receivers">Many Subscribers to Few Receivers</a></p>
+        • <a href="#decrease-packet-flow-through-loss-points">Decrease Packet Flow through Loss Points</a><br />
+        • <a href="#increase-efficiency-of-packet-consumers">Increase Efficiency of Packet Consumers</a><br />
+        • <a href="#decrease-packet-rate-using-rate-limiter">Decrease Packet Rate Using Rate Limiter</a><br />
+            • <a href="#many-subscribers-to-few-receivers">Many Subscribers to Few Receivers</a><br />
+        • <a href="#proper-configuration">Proper Configuration</a></p>
 <!-- TOC created by './mdtoc.pl kb/packet-loss.md' (see https://github.com/fordsfords/mdtoc) -->
 <!-- mdtoc-end -->
 <p><a id="introduction"></a></p>
@@ -31,6 +32,7 @@ and the basics of network data communication.</p>
 <p>Related articles:</p>
 <ul>
 <li><a href="lost-packet-recovery.html">Lost Packet Recovery</a></li>
+<li><a href="configuring-udp-based-transports.html">Configuring UDP-Based Transports</a></li>
 <li><a href="nak-storms.html">NAK Storms</a></li>
 </ul>
 <p><a id="causes-of-packet-loss"></a></p>
@@ -38,15 +40,16 @@ and the basics of network data communication.</p>
 <p>See <a href="https://ultramessaging.github.io/currdoc/doc/Design/packetloss.html#packetlosspoints">Packet Loss Points</a>.</p>
 <p><a id="avoiding-packet-loss"></a></p>
 <h2>Avoiding Packet Loss</h2>
-<p>Everybody should have as their goal to reduce or eliminate packet loss
-as much as possible.</p>
-<p>There are three methods of avoiding packet loss:</p>
+<p>Everybody's goal should be to reduce packet loss as much as possible.
+There are four methods of avoiding packet loss:</p>
 <ul>
 <li><a href="#decrease-packet-flow-through-loss-points">Decrease Packet Flow through Loss Points</a>.</li>
 <li><a href="#increase-efficiency-of-packet-consumers">Increase Efficiency of Packet Consumers</a>.</li>
+<li><a href="#decrease-packet-rate-using-rate-limiter">Decrease Packet Rate Using Rate Limiter</a>.</li>
+<li><a href="#proper-configuration">Proper Configuration</a>.</li>
 </ul>
 <p><a id="decrease-packet-flow-through-loss-points"></a></p>
-<h2>Decrease Packet Flow through Loss Points</h2>
+<h3>Decrease Packet Flow through Loss Points</h3>
 <ul>
 <li><p><a href="https://ultramessaging.github.io/currdoc/doc/Design/architecture.html#messagebatching">Message Batching</a>.
 At most loss points, the number of packets is usually more important than the sizes of the packets.
@@ -55,9 +58,9 @@ For latency-sensitive applications, consider implementing an
 <a href="https://ultramessaging.github.io/currdoc/doc/Design/architecture.html#intelligentbatching">Intelligent Batching</a>
 algorithm.</p>
 </li>
-<li><p>Reduce UM discards. Due to the way publishers map topics to
+<li><p>Reduce UM discards. Due to how publishers map topics to
 <a href="https://ultramessaging.github.io/currdoc/doc/Design/fundamentalconcepts.html#transportsessions">Transport Sessions</a>,
-it is often the case that the receiver will have to discard messages that it hasn't subscribed to.
+the receiver may have to discard messages it hasn't subscribed to.
 The
 <a href="https://ultramessaging.github.io/currdoc/doc/API/structlbm__rcv__transport__stats__t__stct.html">LBT-RM transport statistics</a>
 structure for each transport type contains the field &quot;lbm_msgs_no_topic_rcved&quot; which counts the number of data messages discarded.
@@ -71,11 +74,11 @@ structure field &quot;lbm_msgs_no_topic_rcved&quot;, and the
 <a href="https://ultramessaging.github.io/currdoc/doc/API/structlbm__context__stats__t__stct.html">context statistics</a>
 structure field &quot;lbtru_unknown_msgs_rcved&quot;.</p>
 <p>For the TCP or LBT-RU transport types, you can often decrease discards by turning on
-<a href="https://ultramessaging.github.io/currdoc/doc/Config/grpmajoroptions.html#transportsourcesidefilteringbehaviorsource">Source Side Filtering</a>.</p>
-<p>With Multicast, the Source Side Filtering feature is not possible.
+<a href="https://ultramessaging.github.io/currdoc/doc/Config/grpmajoroptions.html#transportsourcesidefilteringbehaviorsource">Source-Side Filtering</a>.</p>
+<p>With Multicast, the Source-Side Filtering feature is not possible.
 So it is usually necessary to change the topic-to-transport session mapping.
 Ideally, this can be done by taking into account the topic interests of the subscribers.
-But often it simply means increasing the number of transport sessions.
+But often, it simply means increasing the number of transport sessions.
 In the case of LBT-RM, increasing the number of multicast groups is preferred, but is often limited by the network hardware.
 In that case, you can multiply the number of transport sessions by varying the destination port.</p>
 </li>
@@ -88,25 +91,48 @@ See <a href="#decrease-packet-rate-using-rate-limiter">Decrease Packet Rate Usin
 </li>
 </ul>
 <p><a id="increase-efficiency-of-packet-consumers"></a></p>
-<h2>Increase Efficiency of Packet Consumers</h2>
+<h3>Increase Efficiency of Packet Consumers</h3>
 <p>Here are some methods for increasing the efficiency of subscribers:</p>
 <ul>
 <li>Use a <a href="https://ultramessaging.github.io/currdoc/doc/Design/umglossary.html#glossarykernelbypass">kernel-bypass driver</a>.</li>
 <li>For Linux, use <a href="https://ultramessaging.github.io/currdoc/doc/Design/advancedoptimizations.html#receivemultipledatagrams">Receive Multiple Datagrams</a>.</li>
 <li>Use <a href="https://ultramessaging.github.io/currdoc/doc/Design/advancedoptimizations.html#receivebufferrecycling">Receive Buffer Recycling</a>.</li>
 <li>For Java and .NET, use <a href="https://ultramessaging.github.io/currdoc/doc/Design/advancedoptimizations.html#zeroobjectdelivery">Zero Object Delivery</a>.</li>
+<li>Consider using a
+<a href="https://ultramessaging.github.io/currdoc/doc/Design/umglossary.html#glossaryk">Kernel-Bypass Driver</a>
+(e.g. Onload).
+This reduces latency and helps prevent packet loss.</li>
+<li>Migrate to
+<a href="https://ultramessaging.github.io/currdoc/doc/Design/topicresolutiondescription.html#tcpbasedtopicresolutiondetails">TCP-Based Topic Resolution</a>.
+This reduces jitter and helps prevent packet loss.</li>
+<li>Consider using the
+<a href="https://ultramessaging.github.io/currdoc/doc/Design/umfeatures.html#transportservicesproviderxsp">XSP</a>
+feature, especially if you are not using
+<a href="https://ultramessaging.github.io/currdoc/doc/Design/topicresolutiondescription.html#tcpbasedtopicresolutiondetails">TCP-Based Topic Resolution</a>.
+This reduces jitter and helps prevent packet loss.</li>
+<li>Do not use the
+<a href="https://ultramessaging.github.io/currdoc/doc/Design/umfeatures.html#multicastimmediatemessaging">MIM</a>
+feature.</li>
+<li>Be careful with the use of the
+<a href="https://ultramessaging.github.io/currdoc/doc/Design/umfeatures.html#hotfailoverhf">Hot Failover</a>
+feature as this will double load on the host's operating system and Ultra Messaging.</li>
 </ul>
 <p>These steps, plus optimizing your own message handling code, will enable your subscribers to increase their message
 consumption rate without packet loss.
-However, as long as your publishers can exceed your subscribers rate, packet loss is still possible.</p>
+However, as long as your publishers can exceed your subscribers' rate, packet loss is still possible.</p>
 <p><a id="decrease-packet-rate-using-rate-limiter"></a></p>
-<h2>Decrease Packet Rate Using Rate Limiter</h2>
-<p>It is usually possible for publishers to outpace subscribers, especially of multiple publishers are feeding a single subscriber.
+<h3>Decrease Packet Rate Using Rate Limiter</h3>
+<p>It is usually possible for publishers to outpace subscribers, especially when multiple publishers feed a single subscriber.
 For example, if multiple client gateways can send to the same order handling process,
-it is possible for all of them to burst at the same time, overloading the order handler.
+it is possible that all of them burst at the same time, overloading the order handler.
 To avoid packet loss, those publishers should be prevented from bursting at dangerous rates.</p>
+<p>Note that
+<a href="https://ultramessaging.github.io/currdoc/doc/Design/advancedoptimizations.html#smartsources">Smart Sources</a>
+do not support rate limits.
+To minimize the chances of packet loss and <a href="nak-storms.html">NAK storms</a>,
+it becomes the publishing application's responsibility to control its send rate.</p>
 <ol>
-<li><p>Measure your subscribers maximum sustainable message rate (MSMR).
+<li><p>Measure your subscribers' maximum sustainable message rate (MSMR).
 This is usually done empirically by sending test data at progressively
 higher rates until you start getting loss.
 See <a href="https://ultramessaging.github.io/currdoc/doc/Design/packetloss.html#verifyinglossdetectiontools">Verifying Loss Detection Tools</a>
@@ -114,14 +140,14 @@ for information on detecting when that loss happens.
 With UDP-based transports, you should run for more than a full minute without loss.
 See notes [a] and [b].</p>
 </li>
-<li><p>Idenify the sources that will be sending messages to the subscriber.
-Let's say there are two, publishers A and B.
+<li><p>Identify the sources that will be sending messages to the subscriber.
+Let's say there are two publishers, A and B.
 Set each publisher's rate limit to 40% of the subscriber's MSMR
 (never allow the average send rates to exceed 80% of the MSMR).
 Note that this will block the sender if it attempts to exceed this average rate.</p>
 </li>
 <li><p>Traffic tends to be bursty.
-You want to allow brief surges of traffic above the MSMR so long as
+You want to allow brief traffic surges above the MSMR so long as
 subsequent slower periods bring the average below the MSMR.
 This is configured using the rate interval.
 A larger rate interval allows longer, more intense bursts,
@@ -135,8 +161,8 @@ See notes [c] and [d].</p>
 you don't have a consistent execution environment.
 For example, if you don't assign your hot threads to specific CPUs,
 your operating system will migrate your threads between cores,
-even across NUMA zones, which will prevent optimal cache and memory usage.
-A rate that is easly handled in one test run can cause packet loss in the next.
+even across NUMA zones, preventing optimal cache and memory usage.
+A rate that is easily handled in one test run can cause packet loss in the next.
 This measurement can be even harder to characterize if different message types
 require different amounts of time to consume.</p>
 <p><strong>[b]</strong>: Your subscriber might handle different message types that require different times to consume.
@@ -147,14 +173,14 @@ assume 100% of your messages are of the type that requires the maximum consumpti
 <p><strong>[c]</strong>: The rate interval should be set explicitly according to your needs.
 A rate limiter of 500 megabits/sec will essentially be divided into N
 equal periods of the rate interval milliseconds each.
-During each interval, the application will be allowed to send up to
-the rate limiter/N bits of data. This can be at full line rate.
+During each interval, the application is allowed to send up to
+the rate limiter/N bits of data. This can be at the full line rate.
 You can allow more intense bursts by increasing the rate interval,
 thus decreasing the number N.</p>
 <p><strong>[d]</strong>: The UM documentation warns you against setting the rate interval
 to values other than the specific set listed, ranging from 5 to 100.
 A rate interval of 100 divides each second into 10 periods (N=10).
-If you find that this value blocks your publisher too much,
+If that this value blocks your publisher too much,
 you can extend it to 200, 500, or possibly even 1000.
 However, be aware that this allows the publisher to send very intense
 bursts that might lead to queue overflows at
@@ -165,18 +191,23 @@ You should test your publishers sending &quot;as fast as they can&quot;,
 only constrained by the UM rate limiter.
 This will produce the worst-case bursts for the duration of the test.</p>
 <p><a id="many-subscribers-to-few-receivers"></a></p>
-<h3>Many Subscribers to Few Receivers</h3>
+<h4>Many Subscribers to Few Receivers</h4>
 <p>The principle of restricting N publishers to 1/N the maximum sustainable message rate (MSMR)
 of the subscriber may not be practical in some use cases.
 If N becomes large, the permitted send rates may be too low for your system to function effectively.
-In that case you may have to assume a statistical behavior.
-I.e. as N grows, the probability of all of them bursting at the same time becomes small.
+In that case, you may have to assume a statistical behavior.
+I.e., as N grows, the probability of all of them bursting simultaneously becomes small.
 In that case, many users set their rate limiters higher than suggested,
 confident that the aggregate rate of the N publishers won't exceed the MSMR for
 longer than the queues can hold.</p>
 <p>Just be aware that low-probability events do happen occasionally.
 UM's <a href="lost-packet-recovery.html">Lost Packet Recovery</a> should handle these occasional loss incidents,
 but you will always have some risk of <a href="nak-storms.html">NAK Storms</a>.</p>
+<p><a id="proper-configuration"></a></p>
+<h3>Proper Configuration</h3>
+<p>Proper configuration of sources and receivers will reduce the chances of
+loss and <a href="nak-storms.html">NAK storms</a>.
+See <a href="configuring-udp-based-transports.html">Configuring UDP-Based Transports</a>.</p>
 <hr>
 <p>KB <a href="home.html">Home</a> | <a href="index.html">Index</a></p>
 <p>UM <a href="https://ultramessaging.github.io/">Home</a></p>
