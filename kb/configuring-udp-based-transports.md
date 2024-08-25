@@ -26,10 +26,10 @@ protocols, LBT-RU and LBT-RM.
 It assumes you are familiar with the basics of Ultra Messaging's messaging paradigm
 and the basics of network data communication.
 
-This article is mostly concerned with configuration related to packet loss prevention and recovery.
+This article is mainly concerned with configuration related to packet loss prevention and recovery.
 
-UM's LBT-RM and LBT-RU transport types use very similar algorithms and therefore
-are typically configured in the same ways.
+UM's LBT-RM and LBT-RU transport types use very similar algorithms,
+and are typically configured in the same ways.
 Much of this article will focus on LBT-RM, and an LBT-RU user should simply map
 the concepts one-to-one.
 Corresponding RU links will be included as "(RU)".
@@ -50,7 +50,7 @@ Related articles:
 
 You should measure or predict the following characteristics of your UM use case:
 
-1. Expected average and peak message rates required,
+1. Expected average and peak message rates,
 per [transport session](https://ultramessaging.github.io/currdoc/doc/Design/fundamentalconcepts.html#transportsessions).
 By "peak" we do not mean microbursts.
 We mean short-term (a few seconds) rate, typically associated with some event, like a market open or close.
@@ -58,12 +58,13 @@ We mean short-term (a few seconds) rate, typically associated with some event, l
 Microbursts are typically on the order of single-digit milliseconds,
 but can extend into several hundred milliseconds.
 Message rate will typically be at or near the line rate of the publisher's network connection.
-3. Expected avarage and maximum message sizes being sent. This should be periodically re-measured.
+3. Expected average and maximum message sizes being sent. This should be periodically re-measured.
 4. Expected maximum round-trip network latency between a publisher and a subscriber.
 This can typically be ignored within a single data center,
 but in the case of international WAN hops, round-trip latencies can grow to several hundred milliseconds.
 5. End-to-end network bandwidth. This can typically be assumed to be the servers' network connection
-speed (usually 10 gig), but can be different for international WAN hops where data streams must be limited
+speed (usually 10 gig),
+but it can be different for international WAN hops where data streams must be limited
 below the servers' network connection speed. (Note that this is something that the TCP protocol adjusts
 for dynamically. UDP does not.)
 
@@ -89,26 +90,26 @@ The reason for the addition of the round-trip network latency is to allow NAK su
 
 ## NAK Backoff Interval
 
-We recommend leaving the [transport_lbtrm_nak_backoff_interval (receiver)](https://ultramessaging.github.io/currdoc/doc/Config/grptransportlbtrmreliability.html#transportlbtrmnakbackoffintervalreceiver) ([RU](https://ultramessaging.github.io/currdoc/doc/Config/grptransportlbtrureliability.html#transportlbtrunakbackoffintervalreceiver)
+We recommend leaving the [transport_lbtrm_nak_backoff_interval (receiver)](https://ultramessaging.github.io/currdoc/doc/Config/grptransportlbtrmreliability.html#transportlbtrmnakbackoffintervalreceiver) ([RU](https://ultramessaging.github.io/currdoc/doc/Config/grptransportlbtrureliability.html#transportlbtrunakbackoffintervalreceiver))
 at its default value.
 If you do change it, ensure that it is not less than the initial NAK backoff interval.
 
 ## Ignore Interval
 
 To avoid unnecessary repair delay and NCFs, you should set your
-[transport_lbtrm_ignore_interval (source)](https://ultramessaging.github.io/currdoc/doc/Config/grptransportlbtrmreliability.html#transportlbtrmignoreintervalsource) ([RU](https://ultramessaging.github.io/currdoc/doc/Config/grptransportlbtrureliability.html#transportlbtruignoreintervalsource)
+[transport_lbtrm_ignore_interval (source)](https://ultramessaging.github.io/currdoc/doc/Config/grptransportlbtrmreliability.html#transportlbtrmignoreintervalsource) ([RU](https://ultramessaging.github.io/currdoc/doc/Config/grptransportlbtrureliability.html#transportlbtruignoreintervalsource))
 to 1/2 your NAK Backoff Interval.
 
 If you follow our recommendation of leaving the NAK Backoff Interval at its default of 200 ms,
 you should set your ignore interval to 100.
-Note that it does not default to 100, you need to set it.
+Note that it does not default to 100; you need to set it.
 
 ## Data Rate Limit and Rate Interval
 
 To avoid [[NAK Storms]], you should set your
 [transport_lbtrm_data_rate_limit (context)](https://ultramessaging.github.io/currdoc/doc/Config/grptransportlbtrmoperation.html#transportlbtrmdataratelimitcontext) ([RU](https://ultramessaging.github.io/currdoc/doc/Config/grptransportlbtruoperation.html#transportlbtrudataratelimitcontext))
 and
-[transport_lbtrm_rate_interval (context)](https://ultramessaging.github.io/currdoc/doc/Config/grptransportlbtrmoperation.html#transportlbtrmrateintervalcontext) ([RU](https://ultramessaging.github.io/currdoc/doc/Config/grptransportlbtruoperation.html#transportlbtrurateintervalcontext)
+[transport_lbtrm_rate_interval (context)](https://ultramessaging.github.io/currdoc/doc/Config/grptransportlbtrmoperation.html#transportlbtrmrateintervalcontext) ([RU](https://ultramessaging.github.io/currdoc/doc/Config/grptransportlbtruoperation.html#transportlbtrurateintervalcontext))
 according to the procedure listed in
 [Decrease Packet Rate Using Rate Limiter](https://ultramessaging.github.io/um_kb/html/packet-loss.html#decrease-packet-rate-using-rate-limiter).
 
@@ -121,12 +122,13 @@ it becomes the publishing application's responsibility to control its send rate.
 ## Receiver Socket Buffer
 
 To avoid [[NAK storms]], you should set your
-[transport_lbtrm_receiver_socket_buffer (context)](https://ultramessaging.github.io/currdoc/doc/Config/grptransportlbtrmreliability.html#transportlbtrmreceiversocketbuffercontext) ([RU](https://ultramessaging.github.io/currdoc/doc/Config/grptransportlbtrureliability.html#transportlbtrureceiversocketbuffercontext)
+[transport_lbtrm_receiver_socket_buffer (context)](https://ultramessaging.github.io/currdoc/doc/Config/grptransportlbtrmreliability.html#transportlbtrmreceiversocketbuffercontext) ([RU](https://ultramessaging.github.io/currdoc/doc/Config/grptransportlbtrureliability.html#transportlbtrureceiversocketbuffercontext))
 to somewhere between 8MB and 128MB.
 Unfortunately, we have not found an analytical method for calculating
 the optimal socket buffer size.
 But in our practical experience with our users, a 10gig network should have
-at least 20 MB for average workflows, and much higher for heavey workflows.
+at least 20 MB for average workflows, and much higher for heavy workflows.
+
 For example, one of our customers has a twice-daily burst of messages at
 full 10G line rate for 700 ms.
 This customer uses 128 MB socket buffers and rarely has packet loss.
@@ -135,6 +137,7 @@ Remember that the operating system does not statically allocate the
 requested socket buffer size.
 Rather, it allows the socket buffer to grow to that size before
 dropping packets.
+So it only uses that much memory if it needs to.
 
 ## Transmission Window
 
