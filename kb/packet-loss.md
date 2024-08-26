@@ -7,7 +7,7 @@ Overview of the causes and treatments for packet loss.
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [Introduction](#introduction)  
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [Causes of Packet Loss](#causes-of-packet-loss)  
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [Avoiding Packet Loss](#avoiding-packet-loss)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&bull; [Decrease Packet Flow Through Loss Points](#decrease-packet-flow-through-loss-points)  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&bull; [Decrease Packet Flow through Loss Points](#decrease-packet-flow-through-loss-points)  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&bull; [Increase Efficiency of Packet Consumers](#increase-efficiency-of-packet-consumers)  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&bull; [Decrease Packet Rate Using Rate Limiter](#decrease-packet-rate-using-rate-limiter)  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&bull; [Many Subscribers to Few Receivers](#many-subscribers-to-few-receivers)  
@@ -36,12 +36,12 @@ See [Packet Loss Points](https://ultramessaging.github.io/currdoc/doc/Design/pac
 Everybody's goal should be to reduce packet loss as much as possible.
 There are four methods of avoiding packet loss:
 
-* Decrease Packet Flow Through Loss Points.
-* Increase Efficiency of Packet Consumers.
-* Decrease Packet Rate Using Rate Limiter.
-* Proper Configuration.
+* Decrease packet flow through loss points.
+* Increase efficiency of packet consumers.
+* Decrease packet rate using rate limiter.
+* Proper configuration.
 
-### Decrease Packet Flow Through Loss Points
+### Decrease Packet Flow through Loss Points
 
 * [Message Batching](https://ultramessaging.github.io/currdoc/doc/Design/architecture.html#messagebatching).
 At most loss points, the number of packets is usually more important than the sizes of the packets.
