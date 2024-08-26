@@ -56,7 +56,7 @@ You should measure or predict the following characteristics of your UM use case:
 per [transport session](https://ultramessaging.github.io/currdoc/doc/Design/fundamentalconcepts.html#transportsessions).
 By "peak" we do not mean microbursts.
 We mean short-term (a few seconds) rate, typically associated with some event, like a market open or close.
-2. Expected average and maximum mircroburst duration and message rate.
+2. Expected average and maximum microburst duration and message rate.
 Microbursts are typically on the order of single-digit milliseconds,
 but can extend into several hundred milliseconds.
 Message rate will typically be at or near the line rate of the publisher's network connection.
@@ -214,7 +214,7 @@ context transport_lbtru_rate_interval 100
 ### Special Peer Link Considerations
 
 When configuring a UDP peer link for a pair of DROs,
-all the same considerations must be made as are discussed in this article.
+all the same considerations must be made as are discussed above.
 However, pay special attention to the items that include network round-trip time,
 such as NAK backoff times and transmission window.
 For DROs that are widely separated, larger values for both are generally advised.

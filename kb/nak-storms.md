@@ -22,7 +22,7 @@ This article describes what NAK storms are, their causes, and how
 to avoid them.
 It assumes you are familiar with
 the basics of network data communication
-and the basics of Ultra Messaging's NAK-based lost packet recovery protocols
+and the basics of Ultra Messaging's NAK-based lost packet recovery protocols.
 See [[Lost Packet Recovery]] for an overview.
 
 Related articles:
@@ -49,8 +49,7 @@ The question is: what happens when the incoming traffic burst subsides and retur
 
 In a successful lost packet recovery, NAKs can continue for hundreds of milliseconds
 after incoming traffic returns to normal, possibly multiple seconds.
-But importantly, during this recovery period, there should be no new packets lost,
-or at least very few.
+But importantly, few if any new packets should be lost during this period.
 The lack of significant packet loss after the incoming traffic burst subsides is a sign that UM is
 proceeding normally with lost packet recovery.
 

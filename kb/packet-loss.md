@@ -72,8 +72,8 @@ structure contains the field "lbtrm_unknown_msgs_rcved", which also counts data 
 
   With Multicast, the Source-Side Filtering feature is not possible.
   So it is usually necessary to change the topic-to-transport session mapping.
-  Ideally, this can be done by taking into account the topic interests of the subscribers.
-  But often, it simply means increasing the number of transport sessions.
+  Ideally, this is done by considering the subscribers' topic interest.
+  But often, it means increasing the number of transport sessions.
   In the case of LBT-RM, increasing the number of multicast groups is preferred, but is often limited by the network hardware.
   In that case, you can multiply the number of transport sessions by varying the destination port.
 
@@ -108,7 +108,7 @@ This reduces jitter and helps prevent packet loss.
 feature.
 * Be careful with the use of the
 [Hot Failover](https://ultramessaging.github.io/currdoc/doc/Design/umfeatures.html#hotfailoverhf)
-feature as this will double load on the host's operating system and Ultra Messaging.
+feature, as this will double load on the host's operating system and Ultra Messaging.
 
 These steps, plus optimizing your own message handling code, will enable your subscribers to increase their message
 consumption rate without packet loss.
@@ -150,14 +150,13 @@ while a smaller value forces smoother, less-bursty traffic
 (at the expense of potentially blocking the sender).
 See notes [c] and [d].
 
-When the protocol is operating over a WAN,
-you may need to further reduce the rate limiter below the MSMR.
-Consider a subscriber that can sustain in input rate of 8 gigabits/sec,
+When the protocol operates over a WAN,
+you may need to reduce the rate limiter below the MSMR.
+Consider a subscriber that can sustain an input rate of 8 gigabits/sec,
 but it is separated from the publisher by a WAN with a total throughput of
 10 gigabits/sec.
 However, this 10 gigabits/sec must be shared across all networking applications,
-and allowing this publisher to peak at 8 gigabits/sec would result in
-overload of the WAN link.
+and allowing this publisher to peak at 8 gigabits/sec would overload the WAN link.
 
 To ensure a lossless utilization, you should divide up the available bandwidth
 and limit each app that sends over the WAN to its share of the bandwidth.
@@ -166,8 +165,8 @@ NOTES:
 
 **[a]**: Measuring the maximum sustainable message rate (MSMR) can be difficult if
 you don't have a consistent execution environment.
-For example, if you don't assign your hot threads to specific CPU cores,
-your operating system will migrate your threads between cores,
+For example, supposed you don't assign your hot threads to specific CPU cores.
+In that case, your operating system will migrate your threads between cores,
 even across NUMA zones, preventing optimal cache and memory usage.
 A rate that is easily handled in one test run can cause packet loss in the next.
 This measurement can be even harder to characterize if different message types
