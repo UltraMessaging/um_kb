@@ -178,14 +178,14 @@ thus decreasing the number N.
 **[d]**: The UM documentation warns you against setting the rate interval
 to values other than the specific set listed, ranging from 5 to 100.
 A rate interval of 100 divides each second into 10 periods (N=10).
-If that this value blocks your publisher too much,
+If this value blocks your publisher too much,
 you can extend it to 200, 500, or possibly even 1000.
 However, be aware that this allows the publisher to send very intense
 bursts that might lead to queue overflows at
 [packet loss points](https://ultramessaging.github.io/currdoc/doc/Design/packetloss.html#packetlosspoints)
 with small queues,
 especially if multiple publishers burst at the same time.
-You should test your publishers sending "as fast as they can",
+You should test your publishers sending "as fast as they can,"
 only constrained by the UM rate limiter.
 This will produce the worst-case bursts for the duration of the test.
 

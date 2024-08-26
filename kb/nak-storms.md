@@ -20,8 +20,8 @@ NAK storms: the what, why, and now to avoid.
 
 This article describes what NAK storms are, their causes, and how
 to avoid them.
-It assumes you are faimiiar with
-the basics of network data communication.
+It assumes you are familiar with
+the basics of network data communication
 and the basics of Ultra Messaging's NAK-based lost packet recovery protocols
 See [[Lost Packet Recovery]] for an overview.
 
