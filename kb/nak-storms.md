@@ -1,6 +1,6 @@
 # NAK Storms
 
-NAK storms: the what, why, and now to avoid.
+NAK storms: the what, why, and how to avoid.
 
 <!-- mdtoc-start -->
 &bull; [NAK Storms](#nak-storms)  
