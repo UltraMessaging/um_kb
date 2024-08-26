@@ -15,6 +15,8 @@ Elements of configuring LBT-RM and LBT-RU transports.
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [Transmission Window](#transmission-window)  
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [Source-Side Filtering (LBT-RU)](#source-side-filtering-lbt-ru)  
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [Source Socket Buffer (LBT-RU)](#source-socket-buffer-lbt-ru)  
+&nbsp;&nbsp;&nbsp;&nbsp;&bull; [DRO Peer Link](#dro-peer-link)  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&bull; [Special Peer Link Considerations](#special-peer-link-considerations)  
 <!-- TOC created by './mdtoc.pl kb/configuring-udp-based-transports.md' (see https://github.com/fordsfords/mdtoc) -->
 <!-- mdtoc-end -->
 
@@ -113,7 +115,10 @@ and
 according to the procedure listed in
 [Decrease Packet Rate Using Rate Limiter](https://ultramessaging.github.io/um_kb/html/packet-loss.html#decrease-packet-rate-using-rate-limiter).
 
-Note that
+Note that the default value for the data rate limiter is 10 megabits/sec,
+which is almost certainly too low for most real-world use cases.
+
+Also note that
 [Smart Sources](https://ultramessaging.github.io/currdoc/doc/Design/advancedoptimizations.html#smartsources)
 do not support data rate limits.
 To minimize the chances of packet loss and [[NAK storms]],
@@ -148,7 +153,7 @@ to a minimum of:
 (peak_message_rate * avg_message_size) * (initial_nak_backoff + 3*nak_backoff + 2*max_round_trip)
 ```
 For example, a peak message rate of 80,000 msgs/sec, average message size of 600 bytes,
-initial NAK backoff of .09 sec, nak_backoff of .2 sec, round trip time of 0 (assume no WAN):
+initial NAK backoff of .09 sec, nak_backoff of .2 sec, round-trip time of 0 (assume no WAN):
 ```
 (80,000 * 600) * (.09 + .6) = 33,120,000
 ```
@@ -169,3 +174,53 @@ For example, if you expect 8 subscribers to join the source,
 ```
 1000000 + 100000 * 8 = 1800000
 ```
+
+## DRO Peer Link
+
+The
+[UM Dynamic Routing Option (DRO)](https://ultramessaging.github.io/currdoc/doc/Design/fundamentalconcepts.html#umrouter)
+can be configured for a
+[UDP Peer Link](https://ultramessaging.github.io/currdoc/doc/Gateway/droarchitecture.html#udppeerlink).
+This peer link uses the same underlying protocols and code base as the LBT-RU transport type.
+However, because it is not associated with regular UM sources and receivers,
+it must be configured using the DRO's XML configuration file,
+and the configuration options are somewhat different.
+
+The [Router Element "<udp>"](https://ultramessaging.github.io/currdoc/doc/Gateway/xmlconfigurationreference.html#droelementudp)
+element has children elements that specify the LBT-RU operating parameters.
+
+For example,
+[Router Element "<peer-rate-limit>"](https://ultramessaging.github.io/currdoc/doc/Gateway/xmlconfigurationreference.html#droelementpeerratelimit)
+has attributes that control the rate limiter. For example:
+```
+<portals>
+  <peer>
+    ...
+    <udp>
+      ...
+      <peer-rate-limit data="10000000" retransmit="5000000" interval="100"/>
+    </udp>
+  </peer>
+  ...
+</portals>
+```
+This is the equivalent of:
+```
+context transport_lbtru_data_rate_limit 10000000
+context transport_lbtru_retransmit_rate_limit 5000000
+context transport_lbtru_rate_interval 100
+```
+
+### Special Peer Link Considerations
+
+When configuring a UDP peer link for a pair of DROs,
+all the same considerations must be made as are discussed in this article.
+However, pay special attention to the items that include network round-trip time,
+such as NAK backoff times and transmission window.
+For DROs that are widely separated, larger values for both are generally advised.
+
+Also, to ensure a lossless utilization, you should divide up the available bandwidth
+and limit each app that sends over the WAN to its share of the bandwidth using
+UM's rate limiter.
+See 
+[Decrease Packet Rate Using Rate Limiter](https://ultramessaging.github.io/um_kb/html/packet-loss.html#decrease-packet-rate-using-rate-limiter).

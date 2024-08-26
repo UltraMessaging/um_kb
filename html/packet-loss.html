@@ -156,6 +156,16 @@ while a smaller value forces smoother, less-bursty traffic
 See notes [c] and [d].</p>
 </li>
 </ol>
+<p>When the protocol is operating over a WAN,
+you may need to further reduce the rate limiter below the MSMR.
+Consider a subscriber that can sustain in input rate of 8 gigabits/sec,
+but it is separated from the publisher by a WAN with a total throughput of
+10 gigabits/sec.
+However, this 10 gigabits/sec must be shared across all networking applications,
+and allowing this publisher to peak at 8 gigabits/sec would result in
+overload of the WAN link.</p>
+<p>To ensure a lossless utilization, you should divide up the available bandwidth
+and limit each app that sends over the WAN to its share of the bandwidth.</p>
 <p>NOTES:</p>
 <p><strong>[a]</strong>: Measuring the maximum sustainable message rate (MSMR) can be difficult if
 you don't have a consistent execution environment.
