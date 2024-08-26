@@ -44,7 +44,7 @@ It is important to differentiate between successful lost packet recovery and a N
 given that both can have significant numbers of NAKs sent.
 A packet loss incident is generally caused by a temporary burst of incoming network traffic that
 overloads a network device, a host's IP drivers, or an application.
-During this incoming traffic-based overload, packet loss is inevitable.
+During this incoming traffic overload, packet loss is inevitable.
 The question is: what happens when the incoming traffic burst subsides and returns to normal?
 
 In a successful lost packet recovery, NAKs can continue for hundreds of milliseconds

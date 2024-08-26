@@ -17,14 +17,12 @@ If you don't find what you're looking for here, try there.
 
 ## Quick Links
 
-Here are a few recently added articles.
+[Current UM documentation](https://ultramessaging.github.io/currdoc/) - official documentation.
 
-* [Full UM documentation](https://ultramessaging.github.io/currdoc/) - official documentation.
+Here are a few recently added articles:
 
-* [[LBT-RU Configuration]] - Advice on configuring LBT-RU and DRO UDP peer links.
+* [[Packet Loss]] - The hows, whys, and what-to-dos.
 
 * [[UM in the Cloud Notes]] - What to think about when migrating UM to the Cloud.
 
 * [[Lbmrd NAT Notes]] - Explanation and demonstration of UM's "NAT" capabilities of the "lbmrd" resolver daemon.
-
-* [[Socket Buffer Notes]]
