@@ -7,7 +7,7 @@ Overview of the causes and treatments for packet loss.
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [Introduction](#introduction)  
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [Causes of Packet Loss](#causes-of-packet-loss)  
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [Avoiding Packet Loss](#avoiding-packet-loss)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&bull; [Decrease Packet Flow through Loss Points](#decrease-packet-flow-through-loss-points)  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&bull; [Decrease Packet Flow Through Loss Points](#decrease-packet-flow-through-loss-points)  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&bull; [Increase Efficiency of Packet Consumers](#increase-efficiency-of-packet-consumers)  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&bull; [Decrease Packet Rate Using Rate Limiter](#decrease-packet-rate-using-rate-limiter)  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&bull; [Many Subscribers to Few Receivers](#many-subscribers-to-few-receivers)  
@@ -36,12 +36,12 @@ See [Packet Loss Points](https://ultramessaging.github.io/currdoc/doc/Design/pac
 Everybody's goal should be to reduce packet loss as much as possible.
 There are four methods of avoiding packet loss:
 
-* [Decrease Packet Flow through Loss Points](#decrease-packet-flow-through-loss-points).
-* [Increase Efficiency of Packet Consumers](#increase-efficiency-of-packet-consumers).
-* [Decrease Packet Rate Using Rate Limiter](#decrease-packet-rate-using-rate-limiter).
-* [Proper Configuration](#proper-configuration).
+* Decrease Packet Flow Through Loss Points.
+* Increase Efficiency of Packet Consumers.
+* Decrease Packet Rate Using Rate Limiter.
+* Proper Configuration.
 
-### Decrease Packet Flow through Loss Points
+### Decrease Packet Flow Through Loss Points
 
 * [Message Batching](https://ultramessaging.github.io/currdoc/doc/Design/architecture.html#messagebatching).
 At most loss points, the number of packets is usually more important than the sizes of the packets.
@@ -154,7 +154,7 @@ NOTES:
 
 **[a]**: Measuring the maximum sustainable message rate (MSMR) can be difficult if
 you don't have a consistent execution environment.
-For example, if you don't assign your hot threads to specific CPUs,
+For example, if you don't assign your hot threads to specific CPU cores,
 your operating system will migrate your threads between cores,
 even across NUMA zones, preventing optimal cache and memory usage.
 A rate that is easily handled in one test run can cause packet loss in the next.

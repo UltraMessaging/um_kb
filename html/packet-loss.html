@@ -17,7 +17,7 @@
     • <a href="#introduction">Introduction</a><br />
     • <a href="#causes-of-packet-loss">Causes of Packet Loss</a><br />
     • <a href="#avoiding-packet-loss">Avoiding Packet Loss</a><br />
-        • <a href="#decrease-packet-flow-through-loss-points">Decrease Packet Flow through Loss Points</a><br />
+        • <a href="#decrease-packet-flow-through-loss-points">Decrease Packet Flow Through Loss Points</a><br />
         • <a href="#increase-efficiency-of-packet-consumers">Increase Efficiency of Packet Consumers</a><br />
         • <a href="#decrease-packet-rate-using-rate-limiter">Decrease Packet Rate Using Rate Limiter</a><br />
             • <a href="#many-subscribers-to-few-receivers">Many Subscribers to Few Receivers</a><br />
@@ -43,13 +43,13 @@ and the basics of network data communication.</p>
 <p>Everybody's goal should be to reduce packet loss as much as possible.
 There are four methods of avoiding packet loss:</p>
 <ul>
-<li><a href="#decrease-packet-flow-through-loss-points">Decrease Packet Flow through Loss Points</a>.</li>
-<li><a href="#increase-efficiency-of-packet-consumers">Increase Efficiency of Packet Consumers</a>.</li>
-<li><a href="#decrease-packet-rate-using-rate-limiter">Decrease Packet Rate Using Rate Limiter</a>.</li>
-<li><a href="#proper-configuration">Proper Configuration</a>.</li>
+<li>Decrease Packet Flow Through Loss Points.</li>
+<li>Increase Efficiency of Packet Consumers.</li>
+<li>Decrease Packet Rate Using Rate Limiter.</li>
+<li>Proper Configuration.</li>
 </ul>
 <p><a id="decrease-packet-flow-through-loss-points"></a></p>
-<h3>Decrease Packet Flow through Loss Points</h3>
+<h3>Decrease Packet Flow Through Loss Points</h3>
 <ul>
 <li><p><a href="https://ultramessaging.github.io/currdoc/doc/Design/architecture.html#messagebatching">Message Batching</a>.
 At most loss points, the number of packets is usually more important than the sizes of the packets.
@@ -159,7 +159,7 @@ See notes [c] and [d].</p>
 <p>NOTES:</p>
 <p><strong>[a]</strong>: Measuring the maximum sustainable message rate (MSMR) can be difficult if
 you don't have a consistent execution environment.
-For example, if you don't assign your hot threads to specific CPUs,
+For example, if you don't assign your hot threads to specific CPU cores,
 your operating system will migrate your threads between cores,
 even across NUMA zones, preventing optimal cache and memory usage.
 A rate that is easily handled in one test run can cause packet loss in the next.
@@ -180,14 +180,14 @@ thus decreasing the number N.</p>
 <p><strong>[d]</strong>: The UM documentation warns you against setting the rate interval
 to values other than the specific set listed, ranging from 5 to 100.
 A rate interval of 100 divides each second into 10 periods (N=10).
-If that this value blocks your publisher too much,
+If this value blocks your publisher too much,
 you can extend it to 200, 500, or possibly even 1000.
 However, be aware that this allows the publisher to send very intense
 bursts that might lead to queue overflows at
 <a href="https://ultramessaging.github.io/currdoc/doc/Design/packetloss.html#packetlosspoints">packet loss points</a>
 with small queues,
 especially if multiple publishers burst at the same time.
-You should test your publishers sending &quot;as fast as they can&quot;,
+You should test your publishers sending &quot;as fast as they can,&quot;
 only constrained by the UM rate limiter.
 This will produce the worst-case bursts for the duration of the test.</p>
 <p><a id="many-subscribers-to-few-receivers"></a></p>

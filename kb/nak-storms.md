@@ -57,7 +57,7 @@ proceeding normally with lost packet recovery.
 However, if high packet loss persists after the incoming traffic burst subsides,
 this is evidence of a NAK storm.
 The packet recovery messages are added to the "normal" incoming traffic.
-If the sum of the packet rates of normal traffic plus packet recovery packets is high enough,
+If the sum of the packet rates of normal traffic plus packet recovery is high enough,
 the overload condition can be sustained, and the NAK storm becomes time unbounded.
 
 ## NAK Storm Prevention
