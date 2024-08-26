@@ -186,11 +186,11 @@ However, because it is not associated with regular UM sources and receivers,
 it must be configured using the DRO's XML configuration file,
 and the configuration options are somewhat different.
 
-The [Router Element "<udp>"](https://ultramessaging.github.io/currdoc/doc/Gateway/xmlconfigurationreference.html#droelementudp)
+The [Router Element "&lt;udp>"](https://ultramessaging.github.io/currdoc/doc/Gateway/xmlconfigurationreference.html#droelementudp)
 element has children elements that specify the LBT-RU operating parameters.
 
 For example,
-[Router Element "<peer-rate-limit>"](https://ultramessaging.github.io/currdoc/doc/Gateway/xmlconfigurationreference.html#droelementpeerratelimit)
+[Router Element "&lt;peer-rate-limit>"](https://ultramessaging.github.io/currdoc/doc/Gateway/xmlconfigurationreference.html#droelementpeerratelimit)
 has attributes that control the rate limiter. For example:
 ```
 <portals>
