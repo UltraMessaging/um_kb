@@ -1,0 +1,50 @@
+<html><head><title>libscollector</title>
+<link href="../doxygen_manual.css" rel="stylesheet" type="text/css" />
+</head>
+<body bgcolor="#ffffff">
+<div id="doc-content">
+<div class="contents">
+<div class="textblock">
+<a href="https://informatica.com"><img src="../infa_logo.png" width="200" height="69" alt="Informatica"/></a>
+<br/>
+<p><b>Ultra Messaging Knowledge Base</b></p>
+<hr>
+<p><a id="libscollector"></a></p>
+<h1>libscollector</h1>
+<p>Tool to collect core file, executable, and required libraries so that you can open the core file on another host.</p>
+<!-- mdtoc-start -->
+<p>• <a href="#libscollector">libscollector</a><br />
+    • <a href="#introduction">Introduction</a></p>
+<!-- TOC created by './mdtoc.pl kb/libscollector.md' (see https://github.com/fordsfords/mdtoc) -->
+<!-- mdtoc-end -->
+<p><a id="introduction"></a></p>
+<h2>Introduction</h2>
+<p>If one of your Linux processes crashes and generates a core file,
+it can be very helpful to examine the core file to diagnose the reason for the crash.
+Usually it is not practical to run a core file debugger on the host that experienced the crash,
+so the core file must be copied somewhere else.
+This is especially true if you want to send the core file to a vendor for investigation.</p>
+<p>However, you need to copy more than just the core file.
+You need:</p>
+<ul>
+<li>Core file.</li>
+<li>Executable that crashed.</li>
+<li>Dynamic libraries the executable depends on.</li>
+</ul>
+<p>Determining the correct dynamic libraries can be difficult,
+so we developed a shell script to automate the process.</p>
+<p>Usage:</p>
+<pre><code>./libscollector.sh &lt;path to executable&gt; &lt;path to core&gt;
+</code></pre>
+<p>This tool uses &quot;gdb&quot; and &quot;awk&quot; on the host where it is running.</p>
+<p>This tool needs write permission to the current working directory.
+It creates a compressed file of the form &quot;<code>&lt;core file name&gt;_libs_all.tar.gz</code>&quot;.
+For example, if the core file is named &quot;<code>core.1234</code>&quot;,
+the file will be &quot;<code>core.1234_libs_all.tar.gz</code>&quot;.</p>
+<p>Note that the tool writes temporary files prefixed with &quot;<code>/tmp/temp_</code>&quot;.</p>
+<hr>
+<p>KB <a href="home.html">Home</a> | <a href="index.html">Index</a></p>
+<p>UM <a href="https://ultramessaging.github.io/">Home</a></p>
+<p>See <a href="https://ultramessaging.github.io/#notices">Notices</a> for important information.
+</div></div></div>
+</body></html>

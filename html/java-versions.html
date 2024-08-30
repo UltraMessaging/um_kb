@@ -1,0 +1,90 @@
+<html><head><title>Java Versions</title>
+<link href="../doxygen_manual.css" rel="stylesheet" type="text/css" />
+</head>
+<body bgcolor="#ffffff">
+<div id="doc-content">
+<div class="contents">
+<div class="textblock">
+<a href="https://informatica.com"><img src="../infa_logo.png" width="200" height="69" alt="Informatica"/></a>
+<br/>
+<p><b>Ultra Messaging Knowledge Base</b></p>
+<hr>
+<p><a id="java-versions"></a></p>
+<h1>Java Versions</h1>
+<p>Requirements related to Ultra Messaging and versions of Java</p>
+<!-- mdtoc-start -->
+<p>• <a href="#java-versions">Java Versions</a><br />
+    • <a href="#introduction">Introduction</a><br />
+    • <a href="#um-applications">UM Applications</a><br />
+    • <a href="#srs">SRS</a><br />
+    • <a href="#mcs">MCS</a><br />
+    • <a href="#illegal-reflective-access-operation">Illegal Reflective Access Operation</a><br />
+    • <a href="#certification">Certification</a></p>
+<!-- TOC created by './mdtoc.pl kb/java-versions.md' (see https://github.com/fordsfords/mdtoc) -->
+<!-- mdtoc-end -->
+<p><a id="introduction"></a></p>
+<h2>Introduction</h2>
+<p>Ultra Messaging supports Java applications.
+The design of our Java API uses the
+<a href="https://en.wikipedia.org/wiki/Java_Native_Interface">Java Native Interface</a>
+(JNI), which consists of a thin Java wrapper around the UM native dynamic library.</p>
+<p>There are other UM components that are written in pure Java:
+<a href="https://ultramessaging.github.io/currdoc/doc/Design/topicresolutiondescription.html#srsservice">SRS</a>
+and <a href="https://ultramessaging.github.io/currdoc/doc/Operations/monitoring.html#monitoringcollectorservicemcs">MCS</a>.
+(See below.)</p>
+<p><a id="um-applications"></a></p>
+<h2>UM Applications</h2>
+<p>For UM applications, the minimum Java version is 8.</p>
+<p>For Java 9 and higher, run with &quot;<code>--add-opens java.base/java.nio=ALL-UNNAMED</code>&quot;.
+See <a href="#illegal-reflective-access-operation">Illegal Reflective Access Operation</a>.</p>
+<p><a id="srs"></a></p>
+<h2>SRS</h2>
+<p>For the 
+<a href="https://ultramessaging.github.io/currdoc/doc/Design/topicresolutiondescription.html#srsservice">Stateful Resolver Service</a> (SRS),
+the minimum Java version is 9.
+Since this service also uses UM, it requires
+&quot;<code>--add-opens java.base/java.nio=ALL-UNNAMED</code>&quot;.
+See <a href="#illegal-reflective-access-operation">Illegal Reflective Access Operation</a>.</p>
+<p><a id="mcs"></a></p>
+<h2>MCS</h2>
+<p>For the
+<a href="https://ultramessaging.github.io/currdoc/doc/Operations/monitoring.html#monitoringcollectorservicemcs">Monitoring Collector Service</a> (MCS),
+the minimum Java version is 9.
+Since this service also uses UM, it requires
+&quot;<code>--add-opens java.base/java.nio=ALL-UNNAMED</code>&quot;.
+See <a href="#illegal-reflective-access-operation">Illegal Reflective Access Operation</a>.</p>
+<p><a id="illegal-reflective-access-operation"></a></p>
+<h2>Illegal Reflective Access Operation</h2>
+<p>Starting in Java 9, the following warning is displayed when using UM's Java API:</p>
+<pre><code>WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by com.latencybusters.lbm.HobByteBuffer (file:/29W/Amun/home/sford/backup_exclude/UMP_6.14/java/UMS_6.14.jar) to field java.nio.Buffer.address
+WARNING: Please consider reporting this to the maintainers of com.latencybusters.lbm.HobByteBuffer
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+</code></pre>
+<p>This is because of a programming technique we used to improve the performance
+of the Java API greatly.
+When our Java API first started using this method,
+it was advised against due to being unportable,
+but was not documented as having a limited lifetime.
+Starting in Java 9, its lifetime was claimed to be limited,
+although no specific timetable was given.</p>
+<p>Our current solution is to instruct customers to
+supply the Java command-line option &quot;<code>--add-opens java.base/java.nio=ALL-UNNAMED</code>&quot;</p>
+<p>The problem is that all solutions we have investigated result in greater overhead,
+which causes lower sustainable throughput.
+Our customers want better performance, not worse.</p>
+<p>So our policy is to wait until a version of Java prevents our method before
+implementing a different method.
+As of Java version 21, UM still functions with the current design.</p>
+<p><a id="certification"></a></p>
+<h2>Certification</h2>
+<p>The UM product does not certify against specific versions of Java.</p>
+<p>We will perform testing requested by our customers on whatever Java version
+they intend to use.</p>
+<hr>
+<p>KB <a href="home.html">Home</a> | <a href="index.html">Index</a></p>
+<p>UM <a href="https://ultramessaging.github.io/">Home</a></p>
+<p>See <a href="https://ultramessaging.github.io/#notices">Notices</a> for important information.
+</div></div></div>
+</body></html>
