@@ -35,23 +35,22 @@ and <a href="https://ultramessaging.github.io/currdoc/doc/Operations/monitoring.
 <p><a id="um-applications"></a></p>
 <h2>UM Applications</h2>
 <p>For UM applications, the minimum Java version is 8.</p>
-<p>For Java 9 and higher, run with &quot;<code>--add-opens java.base/java.nio=ALL-UNNAMED</code>&quot;.
+<p>For Java 9 and above,
+supply the Java command-line option &quot;<code>--add-opens java.base/java.nio=ALL-UNNAMED</code>&quot;.
 See <a href="#illegal-reflective-access-operation">Illegal Reflective Access Operation</a>.</p>
 <p><a id="srs"></a></p>
 <h2>SRS</h2>
 <p>For the 
 <a href="https://ultramessaging.github.io/currdoc/doc/Design/topicresolutiondescription.html#srsservice">Stateful Resolver Service</a> (SRS),
-the minimum Java version is 9.
-Since this service also uses UM, it requires
-&quot;<code>--add-opens java.base/java.nio=ALL-UNNAMED</code>&quot;.
+the minimum Java version is 9.</p>
+<p>Supply the Java command-line option &quot;<code>--add-opens java.base/java.nio=ALL-UNNAMED</code>&quot;.
 See <a href="#illegal-reflective-access-operation">Illegal Reflective Access Operation</a>.</p>
 <p><a id="mcs"></a></p>
 <h2>MCS</h2>
 <p>For the
 <a href="https://ultramessaging.github.io/currdoc/doc/Operations/monitoring.html#monitoringcollectorservicemcs">Monitoring Collector Service</a> (MCS),
-the minimum Java version is 9.
-Since this service also uses UM, it requires
-&quot;<code>--add-opens java.base/java.nio=ALL-UNNAMED</code>&quot;.
+the minimum Java version is 9.</p>
+<p>Supply the Java command-line option &quot;<code>--add-opens java.base/java.nio=ALL-UNNAMED</code>&quot;.
 See <a href="#illegal-reflective-access-operation">Illegal Reflective Access Operation</a>.</p>
 <p><a id="illegal-reflective-access-operation"></a></p>
 <h2>Illegal Reflective Access Operation</h2>
@@ -69,12 +68,12 @@ it was advised against due to being unportable,
 but was not documented as having a limited lifetime.
 Starting in Java 9, its lifetime was claimed to be limited,
 although no specific timetable was given.</p>
-<p>Our current solution is to instruct customers to
+<p>Our current solution is to for customers to
 supply the Java command-line option &quot;<code>--add-opens java.base/java.nio=ALL-UNNAMED</code>&quot;</p>
-<p>The problem is that all solutions we have investigated result in greater overhead,
-which causes lower sustainable throughput.
+<p>Note that all solutions we have investigated result in greater overhead,
+which introduces some latency and causes noticably lower sustainable throughput.
 Our customers want better performance, not worse.</p>
-<p>So our policy is to wait until a version of Java prevents our method before
+<p>So, our policy is to wait until a version of Java prevents our method before
 implementing a different method.
 As of Java version 21, UM still functions with the current design.</p>
 <p><a id="certification"></a></p>
