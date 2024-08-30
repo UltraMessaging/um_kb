@@ -28,7 +28,7 @@ and [MCS](https://ultramessaging.github.io/currdoc/doc/Operations/monitoring.htm
 
 ## UM Applications
 
-For UM applications, the minimum Java version is 8.
+For Java-based UM applications, the minimum Java version is 8.
 
 For Java 9 and above,
 supply the Java command-line option "`--add-opens java.base/java.nio=ALL-UNNAMED`".
