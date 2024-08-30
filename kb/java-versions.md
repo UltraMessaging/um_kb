@@ -30,7 +30,8 @@ and [MCS](https://ultramessaging.github.io/currdoc/doc/Operations/monitoring.htm
 
 For UM applications, the minimum Java version is 8.
 
-For Java 9 and higher, run with "`--add-opens java.base/java.nio=ALL-UNNAMED`".
+For Java 9 and above,
+supply the Java command-line option "`--add-opens java.base/java.nio=ALL-UNNAMED`".
 See [Illegal Reflective Access Operation](#illegal-reflective-access-operation).
 
 ## SRS
@@ -38,8 +39,8 @@ See [Illegal Reflective Access Operation](#illegal-reflective-access-operation).
 For the 
 [Stateful Resolver Service](https://ultramessaging.github.io/currdoc/doc/Design/topicresolutiondescription.html#srsservice) (SRS),
 the minimum Java version is 9.
-Since this service also uses UM, it requires
-"`--add-opens java.base/java.nio=ALL-UNNAMED`".
+
+Supply the Java command-line option "`--add-opens java.base/java.nio=ALL-UNNAMED`".
 See [Illegal Reflective Access Operation](#illegal-reflective-access-operation).
 
 ## MCS
@@ -47,8 +48,8 @@ See [Illegal Reflective Access Operation](#illegal-reflective-access-operation).
 For the
 [Monitoring Collector Service](https://ultramessaging.github.io/currdoc/doc/Operations/monitoring.html#monitoringcollectorservicemcs) (MCS),
 the minimum Java version is 9.
-Since this service also uses UM, it requires
-"`--add-opens java.base/java.nio=ALL-UNNAMED`".
+
+Supply the Java command-line option "`--add-opens java.base/java.nio=ALL-UNNAMED`".
 See [Illegal Reflective Access Operation](#illegal-reflective-access-operation).
 
 ## Illegal Reflective Access Operation
@@ -70,11 +71,11 @@ but was not documented as having a limited lifetime.
 Starting in Java 9, its lifetime was claimed to be limited,
 although no specific timetable was given.
 
-Our current solution is to instruct customers to
+Our current solution is to for customers to
 supply the Java command-line option "`--add-opens java.base/java.nio=ALL-UNNAMED`"
 
-The problem is that all solutions we have investigated result in greater overhead,
-which causes lower sustainable throughput.
+Note that all solutions we have investigated result in greater overhead,
+which introduces some latency and causes noticably lower sustainable throughput.
 Our customers want better performance, not worse.
 
 So, our policy is to wait until a version of Java prevents our method before
