@@ -21,6 +21,8 @@ If you don't find what you're looking for here, try there.
 
 Here are a few recently added articles:
 
+* [[Two Store Hosts]] - Run Stores on two servers instead of three.
+
 * [[Packet Loss]] - The hows, whys, and what-to-dos.
 
 * [[UM in the Cloud Notes]] - What to think about when migrating UM to the Cloud.
