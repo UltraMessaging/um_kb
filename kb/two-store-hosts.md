@@ -9,6 +9,7 @@ How some UM users reduce their server count by only running two Store servers in
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [Two Hosts Instead of Three](#two-hosts-instead-of-three)  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&bull; [Outage](#outage)  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&bull; [Restart](#restart)  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&bull; [Full Restoration](#full-restoration)  
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [Why Not Two Stores?](#why-not-two-stores)  
 <!-- TOC created by './mdtoc.pl kb/two-store-hosts.md' (see https://github.com/fordsfords/mdtoc) -->
 <!-- mdtoc-end -->
