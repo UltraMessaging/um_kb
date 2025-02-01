@@ -44,7 +44,7 @@ However, some of our customers have expressed dissatisfaction with
 the Transit Gateway and have instead chosen to rely on UM's unicast protocols.
 
 There are other potential multicast solutions; for more information,
-[Multicast in the Cloud Notes](multicast-in-the-cloud-notes.md).
+[[Multicast in the Cloud Notes]].
 
 For the purposes of this article,
 let's assume that you are not making use of a cloud-based multicast solution.
@@ -55,7 +55,7 @@ You should use either transport type LBT-RU or TCP.
 LBT-RU generally provides more predictable latency,
 but in the cloud the difference is minor,
 and the added simplicity of TCP might be preferred.
-See [TCP vs RU](tcp-vs-ru.md) for more discussion.
+See [[TCP vs RU]] for more discussion.
 
 If migrating from multicast to unicast,
 you should enable
@@ -145,7 +145,7 @@ We recommend that this be done as two separate steps.
 First containerize your applications in your own data center,
 and once that is working to your satisfaction, migrate to the cloud.
 
-See [UM in Containers Notes](UM-in-Containers-Notes.md).
+See [[UM-in-Containers-Notes]].
 
 ## Next Steps
 

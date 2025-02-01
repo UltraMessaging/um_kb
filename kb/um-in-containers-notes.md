@@ -37,7 +37,7 @@ We recommend that this be done as two separate steps.
 First containerize your applications in your own data center,
 and once that is working to your satisfaction, migrate to the cloud.
 
-See [UM in the Cloud Notes](UM-in-the-Cloud-Notes.md).
+See [[UM-in-the-Cloud-Notes]].
 
 ## Network
 
