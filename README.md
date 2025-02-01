@@ -9,6 +9,8 @@ See [its license](https://metacpan.org/dist/Markdown-Perl/view/script/pmarkdown#
 
 # The Knowledge Base
 
+This README.md file is intended for use by Informatica staff.
+
 Go to the knowledge base [Home](https://ultramessaging.github.io/um_kb/html/home.html).
 
 
@@ -35,3 +37,17 @@ teams the size of other Informatica teams,
 but for UM the overhead is unnecessary and onerous.
 This KB allows us to get information out to our customers quickly and
 efficiently
+
+Q: How is KB content maintained and expanded?
+
+A: You should already be in the Ultra Messaging GitHub organization.
+These instructions assume you are using Linux and already have your
+GitHub account configured for use with command-line git.
+This example assumes you want to modify the article `static-linking.md`.
+
+> 1. `git clone git@github.com:UltraMessaging/um_kb.git'
+> 2. `cd um_kb.git`
+> 3. `vi kb/static-linking.md`
+> 4. `./bld.sh`
+> 5. `./checkin.sh`
+
