@@ -1,0 +1,74 @@
+<html><head><title>TCP vs RU</title>
+<link href="../doxygen_manual.css" rel="stylesheet" type="text/css" />
+</head>
+<body bgcolor="#ffffff">
+<div id="doc-content">
+<div class="contents">
+<div class="textblock">
+<a href="https://informatica.com"><img src="../infa_logo.png" width="200" height="69" alt="Informatica"/></a>
+<br/>
+<p><b>Ultra Messaging Knowledge Base</b></p>
+<hr>
+<p><a id="tcp-vs-ru"></a></p>
+<h1>TCP vs RU</h1>
+<p>Compare UM transports TCP and LBT-RU.</p>
+<!-- mdtoc-start -->
+<p>• <a href="#tcp-vs-ru">TCP vs RU</a><br />
+    • <a href="#introduction">Introduction</a><br />
+    • <a href="#pacing">Pacing</a><br />
+        • <a href="#source-paced-tcp">Source-Paced TCP</a></p>
+<!-- TOC created by './mdtoc.pl kb/tcp-vs-ru.md' (see https://github.com/fordsfords/mdtoc) -->
+<!-- mdtoc-end -->
+<p><a id="introduction"></a></p>
+<h2>Introduction</h2>
+<p>This article compares and contrasts the UM transport types TCP and LBT-RU.
+It assumes you are familiar with the basics of Ultra Messaging's messaging paradigm
+and the basics of network data communication.</p>
+<p><a id="pacing"></a></p>
+<h2>Pacing</h2>
+<p>LBT-RU is &quot;source-paced&quot;, which means that the publisher has total control over
+when messages are sent.
+When your application calls &quot;send&quot;, it will go out.</p>
+<p>TCP, as a protocol, can be thought of as &quot;receiver-paced&quot;, which means that a
+slow receiver can push back on a publisher.
+If your subscribers can't keep up with your publisher,
+when the intervening buffers fill,
+the publisher's next call to &quot;send&quot; can block to allow the receives an
+opportunity to catch up.</p>
+<p>An advantage of TCP's operation is reduced chance of message loss.
+A disadvantage is the introduction of latency.
+Suppose that you have three subscribers and only one is slow.
+The two fast subscribers will have to wait for the slow receiver.
+In the most extreme case,
+a subscriber might encounter a hang or deadlock condition that
+halts the publisher until the hung subscriber is killed.</p>
+<p>In contrast, a source-paced protocol will provide the fast subscribers
+with the lowest-possible latency at the cost of introducing loss to
+the slow receiver.
+Note that this scenario is usually short-lived during an intense burst
+of traffic, and the slow receiver will typically be able to recover the
+lost data later.
+So the slow receiver will probably eventually get all the data,
+albeit with a high latency.</p>
+<p>The issue is more nuanced; see
+<a href="https://ultramessaging.github.io/currdoc/doc/Design/fundamentalconcepts.html#transportpacing">Transport Pacing</a>
+for more depth.</p>
+<p><a id="source-paced-tcp"></a></p>
+<h3>Source-Paced TCP</h3>
+<p>The configuration option
+<a href="https://ultramessaging.github.io/currdoc/doc/Config/grptransporttcpoperation.html#transporttcpmultiplereceiverbehaviorsource">transport_tcp_multiple_receiver_behavior (source)</a>
+can set to &quot;source_paced&quot;.
+In this mode of operation, if a receiver is slow, the source will simply
+drop outgoing messages intended for that receiver.
+This makes the behavior similar to LBT-RU,
+except that there is no transport-level mechanism to recover the lost data.
+<a href="https://ultramessaging.github.io/currdoc/doc/Design/umfeatures.html#offtransportrecoveryotr">OTR</a>
+might be able to recover the data, especially for persisted data.
+But for non-persisted,
+OTR is generally less successful than LBT-RU's NAK-based recovery.</p>
+<hr>
+<p>KB <a href="home.html">Home</a> | <a href="index.html">Index</a></p>
+<p>UM <a href="https://ultramessaging.github.io/">Home</a></p>
+<p>See <a href="https://ultramessaging.github.io/#notices">Notices</a> for important information.
+</div></div></div>
+</body></html>

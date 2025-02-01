@@ -5,6 +5,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [Disclaimer](#disclaimer)  
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [Bottom Line](#bottom-line)  
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [Multicast](#multicast)  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&bull; [Unicast Transports](#unicast-transports)  
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [Porting Existing Applications to Cloud](#porting-existing-applications-to-cloud)  
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [IP Addresses](#ip-addresses)  
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [Connectivity to Your Data Center](#connectivity-to-your-data-center)  
@@ -42,10 +43,33 @@ that allows applications to invoke standard multicast functionality
 However, some of our customers have expressed dissatisfaction with
 the Transit Gateway and have instead chosen to rely on UM's unicast protocols.
 
-There are other potential multicast solutions; for more informatoin,
+There are other potential multicast solutions; for more information,
 [Multicast in the Cloud Notes](multicast-in-the-cloud-notes.md).
+
 For the purposes of this article,
 let's assume that you are not making use of a cloud-based multicast solution.
+
+### Unicast Transports
+
+You should use either transport type LBT-RU or TCP.
+LBT-RU generally provides more predictable latency,
+but in the cloud the difference is minor,
+and the added simplicity of TCP might be preferred.
+See [TCP vs RU](tcp-vs-ru.md) for more discussion.
+
+If migrating from multicast to unicast,
+you should enable
+[source-side filtering](https://ultramessaging.github.io/currdoc/doc/Config/grpmajoroptions.html#transportsourcesidefilteringbehaviorsource).
+This can improve latency and throughput.
+
+Note also that unicast transports can generate
+["connect" and "disconnect" source events](https://ultramessaging.github.io/currdoc/doc/Design/fundamentalconcepts.html#sourceconnectanddisconnectevents).
+Your publisher code may need to be modified to handle these events.
+
+Note that transport sessions are defined differently
+than with multicast.
+If you mapping topics to transport sessions explicitly,
+you will need to modify that mapping.
 
 ## Porting Existing Applications to Cloud
 
@@ -65,6 +89,12 @@ Most of our customers can handle these new events without code change.
 But there is a possibility (low) that your code will treat the new
 events as an error and will malfunction as a result.
 We can help you analyze your software to determine if you are at risk of this.
+[Contact UM Support](https://ultramessaging.github.io/currdoc/doc/Operations/contactinginformaticasupport.html).
+
+* Some customers map topics to transport sessions using application code.
+If you are changing your transport protocol from multicast to either TCP
+or LBT-RU, you will have to change how you map topics to transport sessions.
+[Contact UM Support](https://ultramessaging.github.io/currdoc/doc/Operations/contactinginformaticasupport.html).
 
 ## IP Addresses
 
