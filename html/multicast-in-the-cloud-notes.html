@@ -1,0 +1,69 @@
+<html><head><title>Multicast in the Cloud Notes</title>
+<link href="../doxygen_manual.css" rel="stylesheet" type="text/css" />
+</head>
+<body bgcolor="#ffffff">
+<div id="doc-content">
+<div class="contents">
+<div class="textblock">
+<a href="https://informatica.com"><img src="../infa_logo.png" width="200" height="69" alt="Informatica"/></a>
+<br/>
+<p><b>Ultra Messaging Knowledge Base</b></p>
+<hr>
+<p><a id="multicast-in-the-cloud-notes"></a></p>
+<h1>Multicast in the Cloud Notes</h1>
+<!-- mdtoc-start -->
+<p>• <a href="#multicast-in-the-cloud-notes">Multicast in the Cloud Notes</a><br />
+    • <a href="#disclaimer">Disclaimer</a><br />
+    • <a href="#bottom-line">Bottom Line</a><br />
+    • <a href="#transit-gateway">Transit Gateway</a><br />
+    • <a href="#swxtchio">swXtch.io</a></p>
+<!-- TOC created by './mdtoc.pl kb/multicast-in-the-cloud-notes.md' (see https://github.com/fordsfords/mdtoc) -->
+<!-- mdtoc-end -->
+<p><a id="disclaimer"></a></p>
+<h2>Disclaimer</h2>
+<p>The Informatica Ultra Messaging group does not have high expertise in Cloud computing.
+To the degree that Cloud provide a Windows or Linux execution environment, Ultra Messaging code will run fine on them.
+But we cannot help you properly configure your cloud instances.</p>
+<p><a id="bottom-line"></a></p>
+<h2>Bottom Line</h2>
+<p>UM is fully supported in the Cloud.
+We have customers using a variety of different UM versions in the Cloud.
+Most of them are running in AWS, but we have at least one that I know of using Azure.
+In most cases, they are able to migrate to the cloud without any changes to their source code.</p>
+<p>Most cloud infrastructures do not support true multicast networking.
+This article provides some information on the multicast solutions we know of,
+but be aware that our information is incomplete and non-authoratative.</p>
+<p><a id="transit-gateway"></a></p>
+<h2>Transit Gateway</h2>
+<p>AWS offers a multicast-like service, called the Transit Gateway,
+that allows applications to invoke standard multicast functionality
+(socket calls) and simulates the operation of multicast.
+However, some of our customers have expressed dissatisfaction with
+the Transit Gateway and have instead chosen to rely on UM's unicast protocols.</p>
+<p>One specific issue identified by one of our customers is an extended &quot;join&quot; time.
+When a subscriber joins a multicast group,
+it can take tens of seconds before the transit gateway starts forwarding the traffic.</p>
+<p>This customer was able to &quot;pre-join&quot; the groups using the &quot;mdump&quot; program
+from the <a href="https://github.com/UltraMessaging/mtools">mtools</a> package.
+This allows this customer to make very limited use of AWS Transit Gateway multicast,
+but only in a specific situation where connectivity is very static.</p>
+<p><a id="swxtchio"></a></p>
+<h2>swXtch.io</h2>
+<p>Pronounced &quot;switch dot eye oh&quot;,
+<a href="https://swxtch.io">swXtch.io</a> offers cloud-based multicast solutions.
+However, to our knowledge, no UM customer has tried using them.
+We (Informatica) have had several conversations with them and have been
+impressed with their expertise and flexibility,
+and their technology sounds very promising.
+But we not yet found a UM customer willing to participate in a POC with them.</p>
+<p>One potential advantage to their technology is the use of kernel-bypass,
+which should reduce latency.
+However, this has not been tested with UM to verify this advantage.</p>
+<p><a href="https://ultramessaging.github.io/currdoc/doc/Operations/contactinginformaticasupport.html">Contact UM Support</a>
+if you would like to initiate a three-way POC with swXtch.io.</p>
+<hr>
+<p>KB <a href="home.html">Home</a> | <a href="index.html">Index</a></p>
+<p>UM <a href="https://ultramessaging.github.io/">Home</a></p>
+<p>See <a href="https://ultramessaging.github.io/#notices">Notices</a> for important information.
+</div></div></div>
+</body></html>

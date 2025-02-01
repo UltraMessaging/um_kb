@@ -28,5 +28,7 @@ mv x.md index.md
 ./bld_1.sh index.md
 rm index.md
 
-echo "Here's the git status. If satisfied, run 'checkin.sh'"
+echo ""
+echo "Build OK. Here's the git status. If satisfied, run 'checkin.sh'"
+echo ""
 git status

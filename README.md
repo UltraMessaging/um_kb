@@ -51,3 +51,11 @@ This example assumes you want to modify the article `static-linking.md`.
 > 4. `./bld.sh`
 > 5. `./checkin.sh`
 
+Here are a few more tips:
+* To create a new article, copy an existing one as a starting point.
+* The first line should be of the form:
+  > `# Title of Article`
+  The name of the file should match the title, with all upper-case
+  converted to lower-case, and all spaces replaced by dashes.
+  For example, the above title implies the file name, "title-of-article.md".
+* The table of contents is generated automatically; you don't need to hand-edit it.

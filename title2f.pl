@@ -33,7 +33,7 @@ while (<>) {
     if (/^# (.*\S)\s*$/) {
       my $title_tag = mk_id($1);
       my $my_root = basename($ARGV, ".md");
-      if ($my_root ne $title_tag) { die "file root $my_root not match title tag $title_tag"; }
+      if ($my_root ne $title_tag) { die "file root '$my_root' not match title tag '$title_tag' in $ARGV:$."; }
       print "$1\n";
       exit(0);
     }
