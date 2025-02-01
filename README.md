@@ -45,7 +45,7 @@ These instructions assume you are using Linux and already have your
 GitHub account configured for use with command-line git.
 This example assumes you want to modify the article `static-linking.md`.
 
-> 1. `git clone git@github.com:UltraMessaging/um_kb.git'
+> 1. `git clone git@github.com:UltraMessaging/um_kb.git`
 > 2. `cd um_kb.git`
 > 3. `vi kb/static-linking.md`
 > 4. `./bld.sh`
