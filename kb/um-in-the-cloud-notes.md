@@ -43,7 +43,7 @@ However, some of our customers have expressed dissatisfaction with
 the Transit Gateway and have instead chosen to rely on UM's unicast protocols.
 
 There are other potential multicast solutions; for more informatoin,
-[Multicast in the Cloud](multicast-in-the-cloud.md).
+[Multicast in the Cloud Notes](multicast-in-the-cloud-notes.md).
 For the purposes of this article,
 let's assume that you are not making use of a cloud-based multicast solution.
 
