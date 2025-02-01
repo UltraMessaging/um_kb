@@ -16,6 +16,7 @@
     • <a href="#disclaimer">Disclaimer</a><br />
     • <a href="#bottom-line">Bottom Line</a><br />
     • <a href="#multicast">Multicast</a><br />
+    • <a href="#porting-existing-applications-to-cloud">Porting Existing Applications to Cloud</a><br />
     • <a href="#ip-addresses">IP Addresses</a><br />
     • <a href="#connectivity-to-your-data-center">Connectivity to Your Data Center</a><br />
     • <a href="#latency">Latency</a><br />
@@ -40,28 +41,33 @@ But based on our experience, there should be no incompatibilities with UM.</p>
 <p>Here are the high-level topics that need to be considered when migrating to the Cloud.</p>
 <p><a id="multicast"></a></p>
 <h2>Multicast</h2>
-<p>Most cloud infrastructures do not support multicast networking.
-I know that AWS does offer multicast, but only as an add-on option.
-It is not enabled by default.
-I don’t know if Azure supports Multicast in their network.
-If you are not using Multicast today for either your data transports or your topic resolution,
-then you have no worries here.
-You can skip this section.</p>
-<p>So, assuming that you are using multicast for topic resolution and/or data transports,
-you will probably need to at least change your configuration.</p>
-<p>THE GOOD NEWS: UM can be used in non-multicast environments.
-You may need to deploy some extra services (one or more instances our “lbmrd” service,
-if you’re not already using it).
-Then you can change your configuration to use unicast topic resolution and a unicast transport.
-We can help you with modifying your configuration.</p>
-<p>THE BAD NEWS: There is a fairly low probability that you will need to make a small change to your code.
-In particular, your publisher may be written to respond to what are called “source events”.
-If that’s the case, then switching to a unicast transport will introduce two new source events:
+<p>Most cloud infrastructures do not support true multicast networking.
+AWS offers a multicast-like service, called the Transit Gateway,
+that allows applications to invoke standard multicast functionality
+(socket calls) and simulates the operation of multicast.
+However, some of our customers have expressed dissatisfaction with
+the Transit Gateway and have instead chosen to rely on UM's unicast protocols.</p>
+<p>For the purposes of this article,
+let's assume that you are not making use of a cloud-based multicast solution.</p>
+<p><a id="porting-existing-applications-to-cloud"></a></p>
+<h2>Porting Existing Applications to Cloud</h2>
+<p>In a majority of cases, applications can be ported to the Cloud by only making
+changes to configuration, not source code.</p>
+<p>However, there can use cases where changes to your source code will be needed.</p>
+<ul>
+<li><p>If you make use of the &quot;MIM&quot; functionality (Multicast Immediate Messages),
+you will have to migrate to a different method.
+<a href="https://ultramessaging.github.io/currdoc/doc/Operations/contactinginformaticasupport.html">Contact UM Support</a>.</p>
+</li>
+<li><p>If your publisher is written to respond to what are called “source events”,
+switching to a unicast transport will introduce two new source events:
 “connect” and “disconnect”.
 Most of our customers can handle these new events without code change.
 But there is a possibility (low) that your code will treat the new
 events as an error and will malfunction as a result.
 We can help you analyze your software to determine if you are at risk of this.</p>
+</li>
+</ul>
 <p><a id="ip-addresses"></a></p>
 <h2>IP Addresses</h2>
 <p>There are different ways to deploy an application system in the cloud.
@@ -75,14 +81,19 @@ a given application could have a different IP address every time it is invoked,
 so it could be changing continuously during the day.</p>
 <p>UM was not written with this kind of non-deterministic addressing in mind.
 UM normally expects applications to be long-running with a stable IP address.
-I know that it is possible to configure your cloud deployment to have stable IP addresses,
-but I don’t know how to do it.</p>
+It is possible to configure your cloud deployment to have stable IP addresses;
+contact your cloud provider for details.</p>
 <p><a id="connectivity-to-your-data-center"></a></p>
 <h2>Connectivity to Your Data Center</h2>
 <p>If you need Ultra Messaging connectivity between your cloud and your own data center,
 you will probably need our DRO component.
 This component bridges across networks and provides transparent messaging connectivity.
 I.e. no source code changes are needed in your applications.</p>
+<p>The most common way of configuring DROs to bridge between your data center and
+the cloud is two DRO instances connected by peer link.
+The <a href="https://ultramessaging.github.io/currdoc/doc/Gateway/droarchitecture.html#udppeerlink">UDP Peer Link</a>
+feature (requires UM version 6.16 or beyond) can avoid the large latency
+outliers and throughput interruptions that can plague TCP-only peer links.</p>
 <p><a id="latency"></a></p>
 <h2>Latency</h2>
 <p>Due to the nature of the cloud environment,

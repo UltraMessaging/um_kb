@@ -5,6 +5,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [Disclaimer](#disclaimer)  
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [Bottom Line](#bottom-line)  
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [Multicast](#multicast)  
+&nbsp;&nbsp;&nbsp;&nbsp;&bull; [Porting Existing Applications to Cloud](#porting-existing-applications-to-cloud)  
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [IP Addresses](#ip-addresses)  
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [Connectivity to Your Data Center](#connectivity-to-your-data-center)  
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [Latency](#latency)  
@@ -34,26 +35,29 @@ Here are the high-level topics that need to be considered when migrating to the 
 
 ## Multicast
 
-Most cloud infrastructures do not support multicast networking.
-I know that AWS does offer multicast, but only as an add-on option.
-It is not enabled by default.
-I don’t know if Azure supports Multicast in their network.
-If you are not using Multicast today for either your data transports or your topic resolution,
-then you have no worries here.
-You can skip this section.
+Most cloud infrastructures do not support true multicast networking.
+AWS offers a multicast-like service, called the Transit Gateway,
+that allows applications to invoke standard multicast functionality
+(socket calls) and simulates the operation of multicast.
+However, some of our customers have expressed dissatisfaction with
+the Transit Gateway and have instead chosen to rely on UM's unicast protocols.
 
-So, assuming that you are using multicast for topic resolution and/or data transports,
-you will probably need to at least change your configuration.
+For the purposes of this article,
+let's assume that you are not making use of a cloud-based multicast solution.
 
-THE GOOD NEWS: UM can be used in non-multicast environments.
-You may need to deploy some extra services (one or more instances our “lbmrd” service,
-if you’re not already using it).
-Then you can change your configuration to use unicast topic resolution and a unicast transport.
-We can help you with modifying your configuration.
+## Porting Existing Applications to Cloud
 
-THE BAD NEWS: There is a fairly low probability that you will need to make a small change to your code.
-In particular, your publisher may be written to respond to what are called “source events”.
-If that’s the case, then switching to a unicast transport will introduce two new source events:
+In a majority of cases, applications can be ported to the Cloud by only making
+changes to configuration, not source code.
+
+However, there can use cases where changes to your source code will be needed.
+
+* If you make use of the "MIM" functionality (Multicast Immediate Messages),
+you will have to migrate to a different method.
+[Contact UM Support](https://ultramessaging.github.io/currdoc/doc/Operations/contactinginformaticasupport.html).
+
+* If your publisher is written to respond to what are called “source events”,
+switching to a unicast transport will introduce two new source events:
 “connect” and “disconnect”.
 Most of our customers can handle these new events without code change.
 But there is a possibility (low) that your code will treat the new
@@ -74,8 +78,8 @@ so it could be changing continuously during the day.
 
 UM was not written with this kind of non-deterministic addressing in mind.
 UM normally expects applications to be long-running with a stable IP address.
-I know that it is possible to configure your cloud deployment to have stable IP addresses,
-but I don’t know how to do it.
+It is possible to configure your cloud deployment to have stable IP addresses;
+contact your cloud provider for details.
 
 ## Connectivity to Your Data Center
 
@@ -83,6 +87,12 @@ If you need Ultra Messaging connectivity between your cloud and your own data ce
 you will probably need our DRO component.
 This component bridges across networks and provides transparent messaging connectivity.
 I.e. no source code changes are needed in your applications.
+
+The most common way of configuring DROs to bridge between your data center and
+the cloud is two DRO instances connected by peer link.
+The [UDP Peer Link](https://ultramessaging.github.io/currdoc/doc/Gateway/droarchitecture.html#udppeerlink)
+feature (requires UM version 6.16 or beyond) can avoid the large latency
+outliers and throughput interruptions that can plague TCP-only peer links.
 
 ## Latency
 
