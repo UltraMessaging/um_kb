@@ -42,10 +42,10 @@ my %targets;
 
 # Main loop; read each line in each file.
 while (<>) {
-  if ($in_code && /^\s*````/) {
+  if ($in_code && /^\s*```/) {
     $in_code = 0;
   }
-  elsif ((! $in_code) && /^\s*````/) {
+  elsif ((! $in_code) && /^\s*```/) {
     $in_code = 1;
   }
 

@@ -30,9 +30,13 @@ when the intervening buffers fill,
 the publisher's next call to "send" can block to allow the receives an
 opportunity to catch up.
 
-An advantage of TCP's operation is reduced chance of message loss.
-A disadvantage is the introduction of latency.
-Suppose that you have three subscribers and only one is slow.
+An advantage of TCP is reduced chance of message loss.
+Note that [Persistence](https://ultramessaging.github.io/currdoc/doc/Design/fundamentalconcepts.html#persistence)
+can be used to almost eliminate message loss, even with LBT-RU.
+
+A disadvantage of TCP is the introduction of latency,
+which can sometimes be significant.
+For example, suppose that you have three subscribers and only one is slow.
 The two fast subscribers will have to wait for the slow receiver.
 In the most extreme case,
 a subscriber might encounter a hang or deadlock condition that
@@ -44,8 +48,12 @@ the slow receiver.
 Note that this scenario is usually short-lived during an intense burst
 of traffic, and the slow receiver will typically be able to recover the
 lost data later.
-So the slow receiver will probably eventually get all the data,
+So the slow receiver will frequently eventually get all the data,
 albeit with a high latency.
+However, if the burst lasts a long time, or if the receiver is consistently slow,
+that loss will eventually lead to unrecoverable loss.
+(Again, [Persistence](https://ultramessaging.github.io/currdoc/doc/Design/fundamentalconcepts.html#persistence)
+can be used to almost eliminate message loss, even with consistently slow LBT-RU receivers.)
 
 The issue is more nuanced; see
 [Transport Pacing](https://ultramessaging.github.io/currdoc/doc/Design/fundamentalconcepts.html#transportpacing)
