@@ -9,13 +9,12 @@ See [its license](https://metacpan.org/dist/Markdown-Perl/view/script/pmarkdown#
 
 # The Knowledge Base
 
-This README.md file is intended for use by Informatica staff.
+Go to the [knowledge base Home](https://ultramessaging.github.io/um_kb/html/home.html).
 
-Go to the knowledge base [Home](https://ultramessaging.github.io/um_kb/html/home.html).
+This README.md file is intended for use by Informatica staff.
 
 
 # Why a Knowledge Base?
-
 
 Q: Why put stuff in a knowledge base (KB) and not in the product doc?
 
