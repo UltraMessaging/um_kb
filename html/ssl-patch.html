@@ -49,7 +49,7 @@ their systems aren't vulnerable.
 It's one thing to say that UM won't call the functions, but it's another thing
 to prove it cannot happen.</p>
 <p>So, in an abundance of caution, the following procedures eliminate the
-vulerable code altogether.</p>
+vulnerable code altogether.</p>
 <p>ATTENTION: in some cases we replace the older vulnerable library with a
 symbolic link of the same name.
 This might trigger a false positive on an automated system scan that
@@ -61,13 +61,13 @@ Please rest assured that the link references an acceptable version.</p>
 <h2>UM Versions 6.8 and Below</h2>
 <p>The principle is to replace UM's OpenSSL libraries with your system's
 resident versions.
-It is assumed that the OpeSSL version resident on your system complies with
+It is assumed that the OpenSSL version resident on your system complies with
 your policies.</p>
 <p>Two examples will be given, one on a CentOS system and the other on Ubuntu.</p>
 <p><a id="centos-um-68-and-below"></a></p>
 <h3>CentOS: UM 6.8 and Below</h3>
 <ol>
-<li><p>Determine where your system stores the OpenSSl libraries.</p>
+<li><p>Determine where your system stores the OpenSSL libraries.</p>
 <pre><code>$ ldd $(which ssh) | egrep libcrypto
         libcrypto.so.1.1 =&gt; /lib64/libcrypto.so.1.1 (0x00007facbd1ff000)
 </code></pre>
@@ -101,7 +101,7 @@ $ ln -s /lib64/libcrypto.so.1.1 libcrypto.so.1.0.0
 <p><a id="ubuntu-um-68-and-below"></a></p>
 <h3>Ubuntu: UM 6.8 and Below</h3>
 <ol>
-<li><p>Determine where your system stores the OpenSSl libraries.</p>
+<li><p>Determine where your system stores the OpenSSL libraries.</p>
 <pre><code>$ ldd $(which ssh) | egrep libcrypto
         libcrypto.so.1.1 =&gt; /lib/x86_64-linux-gnu/libcrypto.so.1.1 (0x00007ff30e7e3000)
 </code></pre>
@@ -130,7 +130,7 @@ $ ln -s /lib/x86_64-linux-gnu/libcrypto.so.1.1 libcrypto.so.1.0.0
 </code></pre>
 </li>
 </ol>
-<p>Once this patch is tested, the libraries stored in /tmp should be deleted.</p>
+<p>Once this patch is tested, the *.insecure libraries can be deleted.</p>
 <p><a id="um-versions-612-and-above"></a></p>
 <h2>UM Versions 6.12 and Above</h2>
 <p>Starting with UM version 6.12,
@@ -141,9 +141,10 @@ Substitute your UM location on the &quot;cd&quot; command.</p>
 <pre><code>$ cd $HOME/UMP_6.12.1/Linux-glibc-2.17-x86_64/lib
 $ ls libssl.so.* libcrypto.so.*
 libcrypto.so.1.0.0   libssl.so.1.0.0
-$ mv libcrypto.so.1.0.0 libssl.so.1.0.0 /tmp/
+$ mv libcrypto.so.1.0.0 libcrypto.so.1.0.0.insecure
+$ mv libssl.so.1.0.0 libssl.so.1.0.0.insecure
 </code></pre>
-<p>Once this patch is tested, the libraries stored in /tmp should be deleted.</p>
+<p>Once this patch is tested, the *.insecure libraries can be deleted.</p>
 <hr>
 <p>KB <a href="home.html">Home</a> | <a href="index.html">Index</a></p>
 <p>UM <a href="https://ultramessaging.github.io/">Home</a></p>

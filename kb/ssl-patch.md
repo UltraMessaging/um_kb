@@ -46,7 +46,7 @@ It's one thing to say that UM won't call the functions, but it's another thing
 to prove it cannot happen.
 
 So, in an abundance of caution, the following procedures eliminate the
-vulerable code altogether.
+vulnerable code altogether.
 
 ATTENTION: in some cases we replace the older vulnerable library with a
 symbolic link of the same name.
@@ -60,14 +60,14 @@ Please rest assured that the link references an acceptable version.
 
 The principle is to replace UM's OpenSSL libraries with your system's
 resident versions.
-It is assumed that the OpeSSL version resident on your system complies with
+It is assumed that the OpenSSL version resident on your system complies with
 your policies.
 
 Two examples will be given, one on a CentOS system and the other on Ubuntu.
 
 ### CentOS: UM 6.8 and Below
 
-1. Determine where your system stores the OpenSSl libraries.
+1. Determine where your system stores the OpenSSL libraries.
    ```
    $ ldd $(which ssh) | egrep libcrypto
            libcrypto.so.1.1 => /lib64/libcrypto.so.1.1 (0x00007facbd1ff000)
@@ -105,7 +105,7 @@ Once this patch is tested, the *.insecure libraries can be deleted.
 
 ### Ubuntu: UM 6.8 and Below
 
-1. Determine where your system stores the OpenSSl libraries.
+1. Determine where your system stores the OpenSSL libraries.
    ```
    $ ldd $(which ssh) | egrep libcrypto
            libcrypto.so.1.1 => /lib/x86_64-linux-gnu/libcrypto.so.1.1 (0x00007ff30e7e3000)
@@ -137,7 +137,7 @@ Once this patch is tested, the *.insecure libraries can be deleted.
    $ ln -s /lib/x86_64-linux-gnu/libcrypto.so.1.1 libcrypto.so.1.0.0
    ```
 
-Once this patch is tested, the libraries stored in /tmp should be deleted.
+Once this patch is tested, the *.insecure libraries can be deleted.
 
 ## UM Versions 6.12 and Above
 
@@ -151,7 +151,8 @@ Substitute your UM location on the "cd" command.
 $ cd $HOME/UMP_6.12.1/Linux-glibc-2.17-x86_64/lib
 $ ls libssl.so.* libcrypto.so.*
 libcrypto.so.1.0.0   libssl.so.1.0.0
-$ mv libcrypto.so.1.0.0 libssl.so.1.0.0 /tmp/
+$ mv libcrypto.so.1.0.0 libcrypto.so.1.0.0.insecure
+$ mv libssl.so.1.0.0 libssl.so.1.0.0.insecure
 ```
 
-Once this patch is tested, the libraries stored in /tmp should be deleted.
+Once this patch is tested, the *.insecure libraries can be deleted.
