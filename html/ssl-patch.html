@@ -21,7 +21,8 @@ follow these instuctions.</p>
         • <a href="#is-patching-necessary">Is Patching Necessary?</a><br />
     • <a href="#um-versions-68-and-below">UM Versions 6.8 and Below</a><br />
         • <a href="#centos-um-68-and-below">CentOS: UM 6.8 and Below</a><br />
-        • <a href="#ubuntu-um-68-and-below">Ubuntu: UM 6.8 and Below</a></p>
+        • <a href="#ubuntu-um-68-and-below">Ubuntu: UM 6.8 and Below</a><br />
+    • <a href="#um-versions-612-and-above">UM Versions 6.12 and Above</a></p>
 <!-- TOC created by './mdtoc.pl kb/ssl-patch.md' (see https://github.com/fordsfords/mdtoc) -->
 <!-- mdtoc-end -->
 <p><a id="introduction"></a></p>
@@ -36,7 +37,7 @@ a newer, more-secure version of OpenSSL.</p>
 and newer versions 6.12 and above.
 In all cases, it is assumed that UM encryption features are not being used.</p>
 <p>For UM versons 6.9.* - 6.11.*, there is no usable patch; users
-must upgrade to version 6.12 or beyond.</p>
+must upgrade to version 6.12 or above.</p>
 <p><a id="is-patching-necessary"></a></p>
 <h3>Is Patching Necessary?</h3>
 <p>It could be argued that for customers that are not using the UM encryption
@@ -95,6 +96,7 @@ $ ln -s /lib64/libcrypto.so.1.1 libcrypto.so.1.0.0
 </code></pre>
 </li>
 </ol>
+<p>Once this patch is tested, the libraries stored in /tmp should be deleted.</p>
 <p><a id="ubuntu-um-68-and-below"></a></p>
 <h3>Ubuntu: UM 6.8 and Below</h3>
 <ol>
@@ -126,6 +128,20 @@ $ ln -s /lib/x86_64-linux-gnu/libcrypto.so.1.1 libcrypto.so.1.0.0
 </code></pre>
 </li>
 </ol>
+<p>Once this patch is tested, the libraries stored in /tmp should be deleted.</p>
+<p><a id="um-versions-612-and-above"></a></p>
+<h2>UM Versions 6.12 and Above</h2>
+<p>Starting with UM version 6.12,
+UM does not link directly with the OpenSSL libraries.
+Instead, they are loaded only if UM encryption features are used.</p>
+<p>So with UM version 6.12 and above, move the vulnerable files to /tmp.
+Substitute your UM location on the &quot;cd&quot; command.</p>
+<pre><code>$ cd $HOME/UMP_6.7.1.7/Linux-glibc-2.5-x86_64/lib
+$ ls libssl.so.* libcrypto.so.*
+libcrypto.so.1.0.0   libssl.so.1.0.0
+$ mv libcrypto.so.1.0.0   libssl.so.1.0.0 /tmp/
+</code></pre>
+<p>Once this patch is tested, the libraries stored in /tmp should be deleted.</p>
 <hr>
 <p>KB <a href="home.html">Home</a> | <a href="index.html">Index</a></p>
 <p>UM <a href="https://ultramessaging.github.io/">Home</a></p>

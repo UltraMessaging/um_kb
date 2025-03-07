@@ -12,6 +12,7 @@ follow these instuctions.
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [UM Versions 6.8 and Below](#um-versions-68-and-below)  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&bull; [CentOS: UM 6.8 and Below](#centos-um-68-and-below)  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&bull; [Ubuntu: UM 6.8 and Below](#ubuntu-um-68-and-below)  
+&nbsp;&nbsp;&nbsp;&nbsp;&bull; [UM Versions 6.12 and Above](#um-versions-612-and-above)  
 <!-- TOC created by './mdtoc.pl kb/ssl-patch.md' (see https://github.com/fordsfords/mdtoc) -->
 <!-- mdtoc-end -->
 
@@ -30,7 +31,7 @@ and newer versions 6.12 and above.
 In all cases, it is assumed that UM encryption features are not being used.
 
 For UM versons 6.9.* - 6.11.*, there is no usable patch; users
-must upgrade to version 6.12 or beyond.
+must upgrade to version 6.12 or above.
 
 ### Is Patching Necessary?
 
@@ -99,6 +100,8 @@ Two examples will be given, one on a CentOS system and the other on Ubuntu.
    $ ln -s /lib64/libcrypto.so.1.1 libcrypto.so.1.0.0
    ```
 
+Once this patch is tested, the libraries stored in /tmp should be deleted.
+
 ### Ubuntu: UM 6.8 and Below
 
 1. Determine where your system stores the OpenSSl libraries.
@@ -132,3 +135,21 @@ Two examples will be given, one on a CentOS system and the other on Ubuntu.
    $ ln -s /lib/x86_64-linux-gnu/libcrypto.so.1.1 libcrypto.so.1.0.0
    ```
 
+Once this patch is tested, the libraries stored in /tmp should be deleted.
+
+## UM Versions 6.12 and Above
+
+Starting with UM version 6.12,
+UM does not link directly with the OpenSSL libraries.
+Instead, they are loaded only if UM encryption features are used.
+
+So with UM version 6.12 and above, move the vulnerable files to /tmp.
+Substitute your UM location on the "cd" command.
+```
+$ cd $HOME/UMP_6.7.1.7/Linux-glibc-2.5-x86_64/lib
+$ ls libssl.so.* libcrypto.so.*
+libcrypto.so.1.0.0   libssl.so.1.0.0
+$ mv libcrypto.so.1.0.0   libssl.so.1.0.0 /tmp/
+```
+
+Once this patch is tested, the libraries stored in /tmp should be deleted.
