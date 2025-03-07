@@ -69,7 +69,7 @@ Two examples will be given, one on a CentOS system and the other on Ubuntu.
 
 1. Determine where your system stores the OpenSSl libraries.
    ```
-   $ ldd `which ssh` | egrep libcrypto
+   $ ldd $(which ssh) | egrep libcrypto
            libcrypto.so.1.1 => /lib64/libcrypto.so.1.1 (0x00007facbd1ff000)
    ```
    The desired libcrypto is after the "=>": /lib64/libcrypto.so.1.1.
@@ -85,13 +85,14 @@ Two examples will be given, one on a CentOS system and the other on Ubuntu.
    link. The "*" means executable, so the desired library is /lib64/libssl.so.1.1.1g
    (without the "*").
 
-3. Move the vulnerable files to /tmp.
+3. rename the vulnerable files.
    Substitute your UM location on the "cd" command.
    ```
    $ cd $HOME/UMP_6.7.1.7/Linux-glibc-2.5-x86_64/lib
    $ ls libssl.so.* libcrypto.so.*
    libcrypto.so.1.0.0   libssl.so.1.0.0
-   $ mv libcrypto.so.1.0.0 libssl.so.1.0.0 /tmp/
+   $ mv libcrypto.so.1.0.0 libcrypto.so.1.0.0.insecure
+   $ mv libssl.so.1.0.0 libssl.so.1.0.0.insecure
    ```
 
 4. Create symbolic links for the files.
@@ -100,13 +101,13 @@ Two examples will be given, one on a CentOS system and the other on Ubuntu.
    $ ln -s /lib64/libcrypto.so.1.1 libcrypto.so.1.0.0
    ```
 
-Once this patch is tested, the libraries stored in /tmp should be deleted.
+Once this patch is tested, the *.insecure libraries can be deleted.
 
 ### Ubuntu: UM 6.8 and Below
 
 1. Determine where your system stores the OpenSSl libraries.
    ```
-   $ ldd `which ssh` | egrep libcrypto
+   $ ldd $(which ssh) | egrep libcrypto
            libcrypto.so.1.1 => /lib/x86_64-linux-gnu/libcrypto.so.1.1 (0x00007ff30e7e3000)
    ```
    The desired libcrypto is after the "=>": /lib/x86_64-linux-gnu/libcrypto.so.1.1.
@@ -120,13 +121,14 @@ Once this patch is tested, the libraries stored in /tmp should be deleted.
    No symbolic link was found, and the library is not executable.
    But that's OK, it's the right one.
 
-3. Move the vulnerable files to /tmp.
+3. rename the vulnerable files.
    Substitute your UM location on the "cd" command.
    ```
    $ cd $HOME/UMP_6.7.1.7/Linux-glibc-2.5-x86_64/lib
    $ ls libssl.so.* libcrypto.so.*
    libcrypto.so.1.0.0   libssl.so.1.0.0
-   $ mv libcrypto.so.1.0.0 libssl.so.1.0.0 /tmp/
+   $ mv libcrypto.so.1.0.0 libcrypto.so.1.0.0.insecure
+   $ mv libssl.so.1.0.0 libssl.so.1.0.0.insecure
    ```
 
 4. Create symbolic links for the files.

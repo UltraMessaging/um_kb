@@ -68,7 +68,7 @@ your policies.</p>
 <h3>CentOS: UM 6.8 and Below</h3>
 <ol>
 <li><p>Determine where your system stores the OpenSSl libraries.</p>
-<pre><code>$ ldd `which ssh` | egrep libcrypto
+<pre><code>$ ldd $(which ssh) | egrep libcrypto
         libcrypto.so.1.1 =&gt; /lib64/libcrypto.so.1.1 (0x00007facbd1ff000)
 </code></pre>
 <p>The desired libcrypto is after the &quot;=&gt;&quot;: /lib64/libcrypto.so.1.1.
@@ -82,12 +82,13 @@ Note the directory &quot;/lib64&quot;.</p>
 link. The &quot;<em>&quot; means executable, so the desired library is /lib64/libssl.so.1.1.1g
 (without the &quot;</em>&quot;).</p>
 </li>
-<li><p>Move the vulnerable files to /tmp.
+<li><p>rename the vulnerable files.
 Substitute your UM location on the &quot;cd&quot; command.</p>
 <pre><code>$ cd $HOME/UMP_6.7.1.7/Linux-glibc-2.5-x86_64/lib
 $ ls libssl.so.* libcrypto.so.*
 libcrypto.so.1.0.0   libssl.so.1.0.0
-$ mv libcrypto.so.1.0.0 libssl.so.1.0.0 /tmp/
+$ mv libcrypto.so.1.0.0 libcrypto.so.1.0.0.insecure
+$ mv libssl.so.1.0.0 libssl.so.1.0.0.insecure
 </code></pre>
 </li>
 <li><p>Create symbolic links for the files.</p>
@@ -96,12 +97,12 @@ $ ln -s /lib64/libcrypto.so.1.1 libcrypto.so.1.0.0
 </code></pre>
 </li>
 </ol>
-<p>Once this patch is tested, the libraries stored in /tmp should be deleted.</p>
+<p>Once this patch is tested, the *.insecure libraries can be deleted.</p>
 <p><a id="ubuntu-um-68-and-below"></a></p>
 <h3>Ubuntu: UM 6.8 and Below</h3>
 <ol>
 <li><p>Determine where your system stores the OpenSSl libraries.</p>
-<pre><code>$ ldd `which ssh` | egrep libcrypto
+<pre><code>$ ldd $(which ssh) | egrep libcrypto
         libcrypto.so.1.1 =&gt; /lib/x86_64-linux-gnu/libcrypto.so.1.1 (0x00007ff30e7e3000)
 </code></pre>
 <p>The desired libcrypto is after the &quot;=&gt;&quot;: /lib/x86_64-linux-gnu/libcrypto.so.1.1.
@@ -114,12 +115,13 @@ Note the directory &quot;/lib/x86_64-linux-gnu&quot;.</p>
 <p>No symbolic link was found, and the library is not executable.
 But that's OK, it's the right one.</p>
 </li>
-<li><p>Move the vulnerable files to /tmp.
+<li><p>rename the vulnerable files.
 Substitute your UM location on the &quot;cd&quot; command.</p>
 <pre><code>$ cd $HOME/UMP_6.7.1.7/Linux-glibc-2.5-x86_64/lib
 $ ls libssl.so.* libcrypto.so.*
 libcrypto.so.1.0.0   libssl.so.1.0.0
-$ mv libcrypto.so.1.0.0 libssl.so.1.0.0 /tmp/
+$ mv libcrypto.so.1.0.0 libcrypto.so.1.0.0.insecure
+$ mv libssl.so.1.0.0 libssl.so.1.0.0.insecure
 </code></pre>
 </li>
 <li><p>Create symbolic links for the files.</p>
