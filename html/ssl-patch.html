@@ -1,0 +1,138 @@
+<html><head><title>SSL Patch</title>
+<link href="../doxygen_manual.css" rel="stylesheet" type="text/css" />
+</head>
+<body bgcolor="#ffffff">
+<div id="doc-content">
+<div class="contents">
+<div class="textblock">
+<a href="https://informatica.com"><img src="../infa_logo.png" width="200" height="69" alt="Informatica"/></a>
+<br/>
+<p><b>Ultra Messaging Knowledge Base</b></p>
+<hr>
+<p><a id="ssl-patch"></a></p>
+<h1>SSL Patch</h1>
+<p>Older versions of UM are linked with old, vulnerable versions of the OpenSSL
+libraries &quot;libssl.so&quot; and &quot;libcrypto.so&quot;.
+Customers wishing to eliminate the vulnerable files from their systems may
+follow these instuctions.</p>
+<!-- mdtoc-start -->
+<p>• <a href="#ssl-patch">SSL Patch</a><br />
+    • <a href="#introduction">Introduction</a><br />
+        • <a href="#is-patching-necessary">Is Patching Necessary?</a><br />
+    • <a href="#um-versions-68-and-below">UM Versions 6.8 and Below</a><br />
+        • <a href="#centos">CentOS</a><br />
+        • <a href="#ubuntu">Ubuntu</a></p>
+<!-- TOC created by './mdtoc.pl kb/ssl-patch.md' (see https://github.com/fordsfords/mdtoc) -->
+<!-- mdtoc-end -->
+<p><a id="introduction"></a></p>
+<h2>Introduction</h2>
+<p>Older versions of Ultra Messaging library (liblbm.so) are linked with old,
+vulnerable versions of the OpenSSL libraries &quot;libssl.so&quot; and &quot;libcrypto.so&quot;.
+System administrators frequently deploy automated security checkers
+which flag the UM-supplied OpenSSL libraries as vulnerable.
+They request that we either remove the vulnerable files or upgrade to
+a newer, more-secure version of OpenSSL.</p>
+<p>This article describes procedures for older UM version up to and including 6.8.*,
+and newer versions 6.12 and above.
+In all cases, it is assumed that UM encryption features are not being used.</p>
+<p>For UM versons 6.9.* - 6.11.*, there is no usable patch; users
+must upgrade to version 6.12 or beyond.</p>
+<p><a id="is-patching-necessary"></a></p>
+<h3>Is Patching Necessary?</h3>
+<p>It could be argued that for customers that are not using the UM encryption
+features, there is no compelling need to make any changes.
+It doesn't matter if the OpenSSL functions are vulnerable since the UM library
+won't call any of them.</p>
+<p>However, we understand that IT departments establish policies to ensure
+their systems aren't vulnerable.
+It's one thing to say that UM won't call the functions, but it's another thing
+to prove cannot happen.</p>
+<p>So, in an abundance of caution, the following procedures eliminate the
+vulerable code altogether.</p>
+<p>ATTENTION: in some cases we replace the older vulnerable library with a
+symbolic link of the same name.
+This might trigger a false positive on an automated system scan that
+assumes the name of the file alone indicates the library version.
+Unfortunately, for older versions of UM, the name of the link
+cannot be changed.
+Please rest assured that the link references an acceptable version.</p>
+<p><a id="um-versions-68-and-below"></a></p>
+<h2>UM Versions 6.8 and Below</h2>
+<p>The principle is to replace UM's OpenSSL libraries with your system's
+resident versions.
+It is assumed that the OpeSSL version resident on your system complies with
+your policies.</p>
+<p>Two examples will be given, one on a CentOS system and the other on Ubuntu.</p>
+<p><a id="centos"></a></p>
+<h3>CentOS</h3>
+<ol>
+<li>Determine where your system stores the OpenSSl libraries.</li>
+</ol>
+<pre><code>$ ldd `which ssh` | egrep libcrypto
+        libcrypto.so.1.1 =&gt; /lib64/libcrypto.so.1.1 (0x00007facbd1ff000)
+</code></pre>
+<p>The desired libcrypto is after the &quot;=&gt;&quot;: /lib64/libcrypto.so.1.1.
+Note the directory &quot;/lib64&quot;.</p>
+<ol start="2">
+<li>Using the directory determined from step 1, identify the latest libssl.so.* file.</li>
+</ol>
+<pre><code>$ ls -F /lib64/libssl.so.*
+/lib64/libssl.so.1.1@  /lib64/libssl.so.1.1.1g*
+</code></pre>
+<p>The &quot;-F&quot; flag adds a suffix character. Ignore the &quot;@&quot; file since it's a symbolic
+link. The &quot;<em>&quot; means executable, so the desired library is /lib64/libssl.so.1.1.1g
+(without the &quot;</em>&quot;).</p>
+<ol start="3">
+<li>Move the vulnerable files to /tmp.
+Substitute your UM location on the &quot;cd&quot; command.</li>
+</ol>
+<pre><code>$ cd $HOME/UMP_6.7.1.7/Linux-glibc-2.5-x86_64/lib
+$ ls libssl.so.* libcrypto.so.*
+libcrypto.so.1.0.0   libssl.so.1.0.0
+$ mv libcrypto.so.1.0.0   libssl.so.1.0.0 /tmp/
+</code></pre>
+<ol start="4">
+<li>Create symbolic links for the files.</li>
+</ol>
+<pre><code>$ ln -s /lib64/libssl.so.1.1.1g libssl.so.1.0.0
+$ ln -s /lib64/libcrypto.so.1.1 libcrypto.so.1.0.0
+</code></pre>
+<p><a id="ubuntu"></a></p>
+<h3>Ubuntu</h3>
+<ol>
+<li>Determine where your system stores the OpenSSl libraries.</li>
+</ol>
+<pre><code>$ ldd `which ssh` | egrep libcrypto
+        libcrypto.so.1.1 =&gt; /lib/x86_64-linux-gnu/libcrypto.so.1.1 (0x00007ff30e7e3000)
+</code></pre>
+<p>The desired libcrypto is after the &quot;=&gt;&quot;: /lib/x86_64-linux-gnu/libcrypto.so.1.1.
+Note the directory &quot;/lib/x86_64-linux-gnu&quot;.</p>
+<ol start="2">
+<li>Using the directory determined from step 1, identify the latest libssl.so.* file.</li>
+</ol>
+<pre><code>$ ls -F /lib/x86_64-linux-gnu/libssl.so.*
+/lib/x86_64-linux-gnu/libssl.so.1.1
+</code></pre>
+<p>No symbolic link was found, and the library is not executable.
+But that's OK, it's the right one.</p>
+<ol start="3">
+<li>Move the vulnerable files to /tmp.
+Substitute your UM location on the &quot;cd&quot; command.</li>
+</ol>
+<pre><code>$ cd $HOME/UMP_6.7.1.7/Linux-glibc-2.5-x86_64/lib
+$ ls libssl.so.* libcrypto.so.*
+libcrypto.so.1.0.0   libssl.so.1.0.0
+$ mv libcrypto.so.1.0.0   libssl.so.1.0.0 /tmp/
+</code></pre>
+<ol start="4">
+<li>Create symbolic links for the files.</li>
+</ol>
+<pre><code>$ ln -s /lib/x86_64-linux-gnu/libssl.so.1.1 libssl.so.1.0.0
+$ ln -s /lib/x86_64-linux-gnu/libcrypto.so.1.1 libcrypto.so.1.0.0
+</code></pre>
+<hr>
+<p>KB <a href="home.html">Home</a> | <a href="index.html">Index</a></p>
+<p>UM <a href="https://ultramessaging.github.io/">Home</a></p>
+<p>See <a href="https://ultramessaging.github.io/#notices">Notices</a> for important information.
+</div></div></div>
+</body></html>
