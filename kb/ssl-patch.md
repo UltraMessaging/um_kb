@@ -3,7 +3,7 @@
 Older versions of UM are linked with old, vulnerable versions of the OpenSSL
 libraries "libssl.so" and "libcrypto.so".
 Customers wishing to eliminate the vulnerable files from their systems may
-follow these instuctions.
+follow these instructions.
 
 <!-- mdtoc-start -->
 &bull; [SSL Patch](#ssl-patch)  
@@ -43,7 +43,7 @@ won't call any of them.
 However, we understand that IT departments establish policies to ensure
 their systems aren't vulnerable.
 It's one thing to say that UM won't call the functions, but it's another thing
-to prove cannot happen.
+to prove it cannot happen.
 
 So, in an abundance of caution, the following procedures eliminate the
 vulerable code altogether.
@@ -91,7 +91,7 @@ Two examples will be given, one on a CentOS system and the other on Ubuntu.
    $ cd $HOME/UMP_6.7.1.7/Linux-glibc-2.5-x86_64/lib
    $ ls libssl.so.* libcrypto.so.*
    libcrypto.so.1.0.0   libssl.so.1.0.0
-   $ mv libcrypto.so.1.0.0   libssl.so.1.0.0 /tmp/
+   $ mv libcrypto.so.1.0.0 libssl.so.1.0.0 /tmp/
    ```
 
 4. Create symbolic links for the files.
@@ -126,7 +126,7 @@ Once this patch is tested, the libraries stored in /tmp should be deleted.
    $ cd $HOME/UMP_6.7.1.7/Linux-glibc-2.5-x86_64/lib
    $ ls libssl.so.* libcrypto.so.*
    libcrypto.so.1.0.0   libssl.so.1.0.0
-   $ mv libcrypto.so.1.0.0   libssl.so.1.0.0 /tmp/
+   $ mv libcrypto.so.1.0.0 libssl.so.1.0.0 /tmp/
    ```
 
 4. Create symbolic links for the files.
@@ -146,10 +146,10 @@ Instead, they are loaded only if UM encryption features are used.
 So with UM version 6.12 and above, move the vulnerable files to /tmp.
 Substitute your UM location on the "cd" command.
 ```
-$ cd $HOME/UMP_6.7.1.7/Linux-glibc-2.5-x86_64/lib
+$ cd $HOME/UMP_6.12.1/Linux-glibc-2.17-x86_64/lib
 $ ls libssl.so.* libcrypto.so.*
 libcrypto.so.1.0.0   libssl.so.1.0.0
-$ mv libcrypto.so.1.0.0   libssl.so.1.0.0 /tmp/
+$ mv libcrypto.so.1.0.0 libssl.so.1.0.0 /tmp/
 ```
 
 Once this patch is tested, the libraries stored in /tmp should be deleted.
