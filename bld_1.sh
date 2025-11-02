@@ -30,7 +30,7 @@ __HEADER__
 cat >>"html/$F.html" <<__FOOTER__
 <br/>
 <br/>
-© $CR_DATE Informatica. All Rights Reserved
+© $CR_YEAR Informatica. All Rights Reserved
 <hr>
 <p>KB <a href="home.html">Home</a> | <a href="index.html">Index</a></p>
 <p>UM <a href="https://ultramessaging.github.io/">Home</a></p>
