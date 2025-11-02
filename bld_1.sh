@@ -15,7 +15,6 @@ fi
 
 cat >"html/$F.html" <<__HEADER__
 <html><head><title>$TITLE</title>
-<link href="../doxygen_manual.css" rel="stylesheet" type="text/css" />
 </head>
 <body bgcolor="#ffffff">
 <div id="doc-content">
