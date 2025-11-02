@@ -6,7 +6,7 @@ F=`basename "$FILE" .md`
 
 if [ ! -r "$FILE" ]; then echo "Error bld_1.sh: cannot read file '$FILE'" >&2; exit 1; fi
 
-CR_YEAR=`date -r "$FILE" "+%Y"`
+CR_YEAR=`git log -1 --format=%cd --date=format:%Y "$FILE"`
 
 TITLE=`./title2f.pl $FILE`;  if [ "$?" -ne 0 ]; then exit 1; fi
 
