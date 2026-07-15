@@ -1,9 +1,13 @@
 {
     "cSpell.words": [
         "checkin",
+        "datagram",
+        "datagrams",
+        "DPDK",
         "Informatica",
         "lbmrd",
         "mdtoc",
-        "pmarkdown"
+        "pmarkdown",
+        "sdnr"
     ]
 }

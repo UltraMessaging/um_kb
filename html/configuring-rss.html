@@ -1,0 +1,100 @@
+<html><head><title>Configuring RSS</title>
+</head>
+<body bgcolor="#ffffff">
+<a href="https://informatica.com"><img src="../infa_logo.png" width="200" height="69" alt="Informatica"/></a>
+<br/>
+<p><b>Ultra Messaging Knowledge Base</b></p>
+<hr>
+<p><a id="configuring-rss"></a></p>
+<h1>Configuring RSS</h1>
+<p>Elements of configuring Linux's Receive-Side Scaling (RSS) for Ultra Messaging</p>
+<!-- mdtoc-start -->
+<p>• <a href="#configuring-rss">Configuring RSS</a><br />
+    • <a href="#introduction">Introduction</a><br />
+    • <a href="#ip-fragmentation">IP Fragmentation</a><br />
+    • <a href="#linux-rss">Linux RSS</a><br />
+    • <a href="#4-tuple-hash-performs-poorly-with-ip-fragmentation">4-tuple Hash Performs Poorly with IP Fragmentation</a><br />
+    • <a href="#2-tuple-hash-performs-better">2-tuple Hash Performs Better</a><br />
+    • <a href="#why-do-ip-fragmentation">Why do IP fragmentation?</a></p>
+<!-- TOC created by './mdtoc.pl kb/configuring-rss.md' (see https://github.com/fordsfords/mdtoc) -->
+<!-- mdtoc-end -->
+<p><a id="introduction"></a></p>
+<h2>Introduction</h2>
+<p>This article gives advice on configuring Linux's Receive-Side Scaling (RSS) for UDP-based Ultra Messaging transports.
+It assumes you are familiar with the basics of Ultra Messaging's messaging paradigm
+and the basics of network data communication.</p>
+<p>This article assumes you are NOT using a kernel-bypass network driver, like Onload or DPDK.
+The concepts still apply, but the UM configurations for those use cases differ significantly.</p>
+<p><a id="ip-fragmentation"></a></p>
+<h2>IP Fragmentation</h2>
+<p>UM's LBT-RM and LBT-RU transports use UDP datagrams.
+UM can be configured for different max datagram sizes
+(<a href="https://ultramessaging.github.io/currdoc/doc/Config/grptransportlbtrmoperation.html#transportlbtrmdatagrammaxsizecontext">LBT-RM</a>,
+<a href="https://ultramessaging.github.io/currdoc/doc/Config/grptransportlbtruoperation.html#transportlbtrudatagrammaxsizecontext">LBT-RU</a>),
+which affects how UM <a href="https://ultramessaging.github.io/currdoc/doc/Design/architecture.html#messagefragmentationandreassembly">creates datagrams</a>.
+By default, UM datagrams are limited to 8192 bytes.
+Notice that this is larger than the standard Ethernet MTU of 1500 bytes.
+When UM sends a datagram larger than an MTU,
+the kernel's IP layer will fragment the datagram into multiple packets,
+which the receiving kernel will reassemble into a contiguous datagram for delivery to UM.</p>
+<p>Therefore, by default, messages larger than an MTU will undergo IP fragmentation.</p>
+<p><a id="linux-rss"></a></p>
+<h2>Linux RSS</h2>
+<p>Many high-performance network controllers support Receive-Side Scaling (RSS).
+One function of RSS is to improve network throughput by spreading processing
+of different UDP data flows to different CPU cores,
+allowing greater parallelism.
+A &quot;flow hash&quot; is used by the hardware to steer packets to different CPU cores
+(via receive queues) based on a configurable set of fields within the packets.
+The default flow hash for most server-grade NICs is a 4-tuple hash that
+includes source IP, destination IP, source port, and destination port.</p>
+<p><a id="4-tuple-hash-performs-poorly-with-ip-fragmentation"></a></p>
+<h2>4-tuple Hash Performs Poorly with IP Fragmentation</h2>
+<p>The problem with the standard 4-tuple hash is that when a UDP datagram exceeds MTU and the kernel
+produces IP fragments, only the first packet in the fragment set contains the UDP ports.
+Subsequent packets contain user data at the packet offsets normally used for UDP ports.
+This causes the hash function to direct different fragments of the same datagram to different CPU cores.</p>
+<p>This does not cause failures - the kernel still reassembles the datagram - but fragments landing on
+different CPUs contend for the shared IP reassembly table, adding lock and cache-coherence overhead.
+The result is out-of-order delivery and elevated latency, sometimes on the order of tens of milliseconds.</p>
+<p>So while sending large UM datagrams (and letting the kernel fragment them) improves throughput on
+the sending side, the resulting fragments can degrade performance on the receiving side.</p>
+<p><a id="2-tuple-hash-performs-better"></a></p>
+<h2>2-tuple Hash Performs Better</h2>
+<p>By configuring the hash to only use source and destination IP addresses,
+all the packets of a given fragmented datagram will be hashed to the same CPU core.</p>
+<p>For example, if your interface device name is &quot;eth1&quot;:</p>
+<pre><code class="language-bash">$ sudo ethtool -N eth1 rx-flow-hash udp4 sd
+</code></pre>
+<p>&quot;sd&quot; is the abbreviation for source and destination IP.</p>
+<p>Note that we recommend doing this during a quiet period
+to minimize the risk of introducing a brief disruption.</p>
+<p>You can also read what your current settings are:</p>
+<pre><code class="language-bash">$ ethtool -n eth1 rx-flow-hash udp4
+UDP over IPV4 flows use these fields for computing Hash flow key:
+IP SA
+IP DA
+</code></pre>
+<p>It only shows two IP lines, so the ports are not being included in the hash.</p>
+<p>If you want to return it to the 4-tuple setting:</p>
+<pre><code class="language-bash">$ sudo ethtool -N eth1 rx-flow-hash udp4 sdnr
+</code></pre>
+<p>The &quot;sdnr&quot; means IPs and ports.</p>
+<p>Different Linux distributions and versions use different methods to make that
+ethtool setting permanent (survive a reboot).
+See your version's documentation.</p>
+<p><a id="why-do-ip-fragmentation"></a></p>
+<h2>Why do IP fragmentation?</h2>
+<p>This kernel-level IP fragmentation can provide a significant improvement in throughput.
+The alternative would be to set the datagram max size such that IP fragmentation would never happen.
+Then, if you have a 5000-byte message to send,
+UM would need to fragment it into four MTU-sized datagrams and send each one separately.
+That's four kernel calls, which is expensive.</p>
+<br/>
+<br/>
+©  Informatica. All Rights Reserved
+<hr>
+<p>KB <a href="home.html">Home</a> | <a href="index.html">Index</a></p>
+<p>UM <a href="https://ultramessaging.github.io/">Home</a></p>
+<p>See <a href="https://ultramessaging.github.io/#notices">Notices</a> for important information.
+</body></html>
