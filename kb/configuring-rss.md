@@ -74,7 +74,7 @@ $ sudo ethtool -N eth1 rx-flow-hash udp4 sd
 ```
 "sd" is the abbreviation for source and destination IP.
 
-***NOTE***: We recommend doing this during a quiet period
+**NOTE**: We recommend doing this during a quiet period
 to minimize the risk of disruption.
 
 You can also read what your current settings are:
