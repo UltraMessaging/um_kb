@@ -67,8 +67,8 @@ all the packets of a given fragmented datagram will be hashed to the same CPU co
 <pre><code class="language-bash">$ sudo ethtool -N eth1 rx-flow-hash udp4 sd
 </code></pre>
 <p>&quot;sd&quot; is the abbreviation for source and destination IP.</p>
-<p>Note that we recommend doing this during a quiet period
-to minimize the risk of introducing a brief disruption.</p>
+<p><em><strong>NOTE</strong></em>: We recommend doing this during a quiet period
+to minimize the risk of disruption.</p>
 <p>You can also read what your current settings are:</p>
 <pre><code class="language-bash">$ ethtool -n eth1 rx-flow-hash udp4
 UDP over IPV4 flows use these fields for computing Hash flow key:
