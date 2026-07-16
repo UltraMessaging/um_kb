@@ -20,7 +20,7 @@ This article gives advice on configuring Linux's Receive-Side Scaling (RSS) for 
 It assumes you are familiar with the basics of Ultra Messaging's messaging paradigm
 and the basics of network data communication.
 
-This article assumes you are NOT using a kernel-bypass network driver, like Onload or DPDK.
+This article assumes you are NOT using a kernel-bypass network driver, like Onload.
 The concepts still apply, but the UM configurations for those use cases differ significantly.
 
 ## IP Fragmentation

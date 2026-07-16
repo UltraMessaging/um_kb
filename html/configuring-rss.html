@@ -23,7 +23,7 @@
 <p>This article gives advice on configuring Linux's Receive-Side Scaling (RSS) for UDP-based Ultra Messaging transports.
 It assumes you are familiar with the basics of Ultra Messaging's messaging paradigm
 and the basics of network data communication.</p>
-<p>This article assumes you are NOT using a kernel-bypass network driver, like Onload or DPDK.
+<p>This article assumes you are NOT using a kernel-bypass network driver, like Onload.
 The concepts still apply, but the UM configurations for those use cases differ significantly.</p>
 <p><a id="ip-fragmentation"></a></p>
 <h2>IP Fragmentation</h2>
@@ -92,7 +92,7 @@ UM would need to fragment it into four MTU-sized datagrams and send each one sep
 That's four kernel calls, which is expensive.</p>
 <br/>
 <br/>
-©  Informatica. All Rights Reserved
+© 2026 Informatica. All Rights Reserved
 <hr>
 <p>KB <a href="home.html">Home</a> | <a href="index.html">Index</a></p>
 <p>UM <a href="https://ultramessaging.github.io/">Home</a></p>
