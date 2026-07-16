@@ -9,7 +9,7 @@ Elements of configuring Linux's Receive-Side Scaling (RSS) for Ultra Messaging
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [Linux RSS](#linux-rss)  
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [4-tuple Hash Performs Poorly with IP Fragmentation](#4-tuple-hash-performs-poorly-with-ip-fragmentation)  
 &nbsp;&nbsp;&nbsp;&nbsp;&bull; [2-tuple Hash Performs Better](#2-tuple-hash-performs-better)  
-&nbsp;&nbsp;&nbsp;&nbsp;&bull; [Why do IP fragmentation?](#why-do-ip-fragmentation)  
+&nbsp;&nbsp;&nbsp;&nbsp;&bull; [Why Do IP Fragmentation?](#why-do-ip-fragmentation)  
 <!-- TOC created by './mdtoc.pl kb/configuring-rss.md' (see https://github.com/fordsfords/mdtoc) -->
 <!-- mdtoc-end -->
 
@@ -60,7 +60,7 @@ This does not cause failures - the kernel still reassembles the datagram - but f
 different CPUs contend for the shared IP reassembly table, adding lock and cache-coherence overhead.
 The result is out-of-order delivery and elevated latency, sometimes on the order of tens of milliseconds.
 
-So while sending large UM datagrams (and letting the kernel fragment them) improves throughput on
+So while sending large UM datagrams (and letting the kernel fragment them) can improve throughput on
 the sending side, the resulting fragments can degrade performance on the receiving side.
 
 ## 2-tuple Hash Performs Better
@@ -96,10 +96,21 @@ Different Linux distributions and versions use different methods to make that
 ethtool setting permanent (survive a reboot).
 See your version's documentation.
 
-## Why do IP fragmentation?
+## Why Do IP Fragmentation?
 
-This kernel-level IP fragmentation can provide a significant improvement in throughput.
-The alternative would be to set the datagram max size such that IP fragmentation would never happen.
+Kernel-level IP fragmentation can provide a significant improvement in throughput.
+The alternative would be to lower the datagram max size such that IP fragmentation would never happen.
 Then, if you have a 5000-byte message to send,
-UM would need to fragment it into four MTU-sized datagrams and send each one separately.
+UM would need to break it into four MTU-sized datagrams and send each one separately.
 That's four kernel calls, which is expensive.
+
+Note that the issue also depends on an application's UM usage pattern.
+For example, if an application never sends messages greater than 1 KB and
+flushes each message (no batching), UM will never send a datagram larger than an MTU,
+and the kernel will never fragment the datagram.
+There will be no performance degradation.
+However, this use case also does not benefit from kernel call reduction,
+and therefore will have a lower maximum throughput than if larger datagrams
+could be used.
+See [Message Batching](https://ultramessaging.github.io/currdoc/doc/Design/architecture.html#messagebatching)
+for techniques that can leverage large datagrams to improve maximum throughput.
