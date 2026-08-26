@@ -38,7 +38,7 @@ See [Illegal Reflective Access Operation](#illegal-reflective-access-operation).
 
 For the 
 [Stateful Resolver Service](https://ultramessaging.github.io/currdoc/doc/Design/topicresolutiondescription.html#srsservice) (SRS),
-the minimum Java version is 9.
+the minimum Java version is 11.0.2.
 
 Supply the Java command-line option "`--add-opens java.base/java.nio=ALL-UNNAMED`".
 See [Illegal Reflective Access Operation](#illegal-reflective-access-operation).
